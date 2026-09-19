@@ -3,20 +3,372 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Woo Woo Frequency Generator – Qualhalla</title>
-<link rel="stylesheet" href="../style.css">
+<title>Woo Woo Frequency Generator</title>
+<meta name="description" content="Solfeggio frequencies, binaural beats and layered tones for meditation and sound healing. No ads, no tracking, one-time purchase.">
+<meta property="og:title" content="Woo Woo Frequency Generator">
+<meta property="og:image" content="https://play-lh.googleusercontent.com/M83XU8R3i0sPTpMOnLIZJQa05iX1T0bnXCLkPV5hK9tQcsQVF44XaYJLT_WkCcQbxakm6SEku6N2RN4e2PMP=s512">
+<style>
+:root{
+  --night:#07060d; --deep:#110d1f; --violet:#8b6cf0; --lilac:#c9b8ff;
+  --gold:#d9b872; --ink:#ece6f7; --dim:#a79fbd; --line:rgba(217,184,114,.28);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+}
+*{box-sizing:border-box}
+html{background:var(--night)}
+body{margin:0;color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.6;
+  background:radial-gradient(ellipse 80% 55% at 50% 12%,#2a1b55 0%,#150f2b 45%,var(--night) 80%) no-repeat,var(--night);
+  min-height:100vh;overflow-x:hidden}
+.sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;fill:#b7a6f2;--m:linear-gradient(90deg,#000 0,#000 calc(50% - 480px),rgba(0,0,0,.12) calc(50% - 380px),rgba(0,0,0,.12) calc(50% + 380px),#000 calc(50% + 480px),#000 100%);-webkit-mask-image:var(--m);mask-image:var(--m)}
+.wrap p,.wrap h1,.wrap h3,.hz,.nm{text-shadow:0 0 8px var(--night),0 0 2px var(--night)}
+.sky .tw{animation:tw 5s ease-in-out infinite}
+@keyframes tw{50%{opacity:.1}}
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:0 20px}
+nav{padding:22px 0;font-size:.9rem;letter-spacing:.14em;text-transform:uppercase}
+nav a{color:var(--dim);text-decoration:none} nav a:hover{color:var(--gold)}
+
+/* hero */
+.hero{text-align:center;padding:10px 0 40px}
+.sigil{position:relative;width:min(400px,86vw);aspect-ratio:1;margin:0 auto}
+.sigil svg{position:absolute;inset:0;width:100%;height:100%}
+.ring-outer{animation:spin 240s linear infinite;transform-origin:50% 50%}
+.ring-inner{animation:spin 160s linear infinite reverse;transform-origin:50% 50%}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sigil text{fill:var(--gold);font-family:var(--serif);font-size:13px;letter-spacing:.12em;opacity:.85}
+.sigil line,.sigil circle.r{stroke:var(--gold);fill:none;stroke-width:.7;opacity:.55}
+.gem{position:absolute;left:50%;top:50%;width:42%;aspect-ratio:1;object-fit:cover;translate:-50% -50%;border-radius:22%;
+  box-shadow:0 0 60px 10px rgba(139,108,240,.35),0 0 140px 40px rgba(139,108,240,.15);
+  animation:float 7s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+h1{font-weight:400;font-size:clamp(2.1rem,6vw,3.4rem);line-height:1.1;margin:28px 0 10px;letter-spacing:.01em}
+h1 em{font-style:italic;color:var(--lilac)}
+.lede{max-width:34em;margin:0 auto;color:var(--dim);font-style:italic;font-size:1.1rem}
+.stores{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:30px}
+.stores a{display:inline-flex;align-items:center;gap:10px;padding:13px 22px;border:1px solid var(--gold);
+  border-radius:999px;color:var(--gold);text-decoration:none;letter-spacing:.06em;font-size:.95rem;transition:.25s}
+.stores a:hover{background:var(--gold);color:var(--night)}
+.stores svg{width:18px;height:18px;fill:currentColor}
+.price{margin-top:14px;font-size:.85rem;color:var(--dim);letter-spacing:.08em}
+
+/* divider */
+.orn{display:flex;align-items:center;gap:14px;color:var(--gold);margin:60px 0 34px;font-size:.8rem;letter-spacing:.3em;text-transform:uppercase}
+.orn::before,.orn::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent)}
+
+/* scale */
+.scale{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(9,1fr);border-top:1px solid var(--line)}
+.scale li{position:relative;padding:18px 2px 0;text-align:center}
+.scale li::before{content:"";position:absolute;top:0;left:50%;width:1px;height:10px;background:var(--gold)}
+.hz{display:block;font-size:1.45rem;color:var(--ink)}
+.nm{display:block;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-top:2px}
+.scale li:hover .hz{color:var(--lilac);text-shadow:0 0 18px var(--violet)}
+
+/* features */
+.feats{list-style:none;padding:0;margin:0}
+.feats li{display:grid;grid-template-columns:70px 1fr;gap:18px;padding:22px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.feats li:last-child{border-bottom:0}
+.num{font-style:italic;color:var(--gold);font-size:1.25rem;text-align:right;padding-top:2px}
+.feats h3{margin:0 0 4px;font-weight:400;font-size:1.3rem}
+.feats p{margin:0;color:var(--dim)}
+
+/* screens */
+.screens{display:flex;gap:16px;overflow-x:auto;padding:6px 2px 18px;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.screens img{flex:0 0 auto;width:180px;height:auto;border-radius:18px;border:1px solid rgba(255,255,255,.08);scroll-snap-align:start;background:var(--deep)}
+
+/* vow */
+.vow{text-align:center;padding:10px 0 20px}
+.vow p{font-size:clamp(1.3rem,3.6vw,1.8rem);line-height:1.4;margin:0 0 14px}
+.vow small{display:block;color:var(--dim);font-style:italic;font-size:1rem}
+footer{text-align:center;color:var(--dim);font-size:.8rem;letter-spacing:.1em;padding:60px 0 40px}
+footer a{color:var(--dim)}
+
+@media (max-width:640px){
+  body{font-size:17px}
+  .scale{grid-template-columns:repeat(3,1fr);row-gap:14px}
+  .feats li{grid-template-columns:44px 1fr;gap:12px}
+  .screens img{width:150px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
-<header><a href="../">Qualhalla</a></header>
-<main>
-<img class="icon" src="https://play-lh.googleusercontent.com/M83XU8R3i0sPTpMOnLIZJQa05iX1T0bnXCLkPV5hK9tQcsQVF44XaYJLT_WkCcQbxakm6SEku6N2RN4e2PMP=s256" alt="Woo Woo Frequency Generator icon" width="128" height="128">
-<h1>Woo Woo Frequency Generator</h1>
-<p>Layer solfeggio, binaural and custom tones for meditation, focus and relaxation.</p>
-<div class="links">
-<a class="btn" href="https://play.google.com/store/apps/details?id=com.qualhalla.woowoofrequencygenerator">Get it on Google Play</a>
-<a class="btn" href="https://apps.apple.com/us/app/woo-woo-frequency-generator/id6794144015">Download on the App Store</a>
+<svg class="sky" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<circle cx="996" cy="832" r="0.8" opacity="0.39"/>
+<circle cx="745" cy="356" r="1.8" opacity="0.41" class="tw" style="animation-delay:3.8s"/>
+<circle cx="923" cy="307" r="1.3" opacity="0.75"/>
+<circle cx="686" cy="831" r="0.6" opacity="0.82"/>
+<circle cx="193" cy="150" r="1.3" opacity="0.57"/>
+<circle cx="355" cy="822" r="0.8" opacity="0.83" class="tw" style="animation-delay:3.1s"/>
+<circle cx="740" cy="515" r="0.8" opacity="0.79" class="tw" style="animation-delay:4.7s"/>
+<circle cx="162" cy="386" r="1" opacity="0.8"/>
+<circle cx="992" cy="577" r="1.3" opacity="0.63"/>
+<circle cx="302" cy="535" r="0.8" opacity="0.8" class="tw" style="animation-delay:2.8s"/>
+<circle cx="522" cy="602" r="1.3" opacity="0.85" class="tw" style="animation-delay:0.5s"/>
+<circle cx="808" cy="215" r="1.3" opacity="0.31" class="tw" style="animation-delay:4.2s"/>
+<circle cx="418" cy="52" r="1.3" opacity="0.7"/>
+<circle cx="910" cy="453" r="0.8" opacity="0.6"/>
+<circle cx="829" cy="957" r="1" opacity="0.66"/>
+<circle cx="594" cy="45" r="1.8" opacity="0.39"/>
+<circle cx="745" cy="374" r="0.8" opacity="0.38" class="tw" style="animation-delay:0.9s"/>
+<circle cx="358" cy="466" r="0.6" opacity="0.57"/>
+<circle cx="778" cy="530" r="0.8" opacity="0.27"/>
+<circle cx="439" cy="56" r="1.8" opacity="0.81"/>
+<circle cx="261" cy="87" r="1.8" opacity="0.85" class="tw" style="animation-delay:4.4s"/>
+<circle cx="494" cy="449" r="1.8" opacity="0.71"/>
+<circle cx="999" cy="499" r="1.3" opacity="0.85"/>
+<circle cx="195" cy="433" r="0.6" opacity="0.86"/>
+<circle cx="322" cy="885" r="0.6" opacity="0.31"/>
+<circle cx="951" cy="795" r="0.6" opacity="0.4" class="tw" style="animation-delay:2.1s"/>
+<circle cx="105" cy="630" r="1.8" opacity="0.42"/>
+<circle cx="821" cy="585" r="0.6" opacity="0.6"/>
+<circle cx="673" cy="565" r="0.6" opacity="0.58"/>
+<circle cx="247" cy="58" r="1.3" opacity="0.47" class="tw" style="animation-delay:2.3s"/>
+<circle cx="862" cy="580" r="1.8" opacity="0.71" class="tw" style="animation-delay:1.5s"/>
+<circle cx="554" cy="348" r="1.3" opacity="0.57"/>
+<circle cx="633" cy="938" r="0.6" opacity="0.42" class="tw" style="animation-delay:5.5s"/>
+<circle cx="924" cy="663" r="0.6" opacity="0.86"/>
+<circle cx="807" cy="428" r="0.8" opacity="0.61" class="tw" style="animation-delay:5.6s"/>
+<circle cx="48" cy="485" r="0.6" opacity="0.9"/>
+<circle cx="964" cy="143" r="1.3" opacity="0.42"/>
+<circle cx="215" cy="200" r="1" opacity="0.27"/>
+<circle cx="683" cy="181" r="0.6" opacity="0.62"/>
+<circle cx="941" cy="448" r="1" opacity="0.73"/>
+<circle cx="151" cy="619" r="0.6" opacity="0.57"/>
+<circle cx="380" cy="787" r="1.3" opacity="0.76"/>
+<circle cx="618" cy="893" r="0.8" opacity="0.35"/>
+<circle cx="558" cy="329" r="0.8" opacity="0.75"/>
+<circle cx="447" cy="349" r="1.3" opacity="0.59"/>
+<circle cx="988" cy="336" r="0.8" opacity="0.75"/>
+<circle cx="259" cy="104" r="1" opacity="0.38" class="tw" style="animation-delay:4.4s"/>
+<circle cx="602" cy="943" r="1.3" opacity="0.59"/>
+<circle cx="72" cy="608" r="1.3" opacity="0.46"/>
+<circle cx="88" cy="13" r="0.6" opacity="0.71"/>
+<circle cx="976" cy="705" r="1" opacity="0.39"/>
+<circle cx="215" cy="944" r="1.3" opacity="0.51" class="tw" style="animation-delay:0.4s"/>
+<circle cx="106" cy="822" r="1" opacity="0.43"/>
+<circle cx="843" cy="204" r="0.8" opacity="0.31"/>
+<circle cx="560" cy="24" r="0.8" opacity="0.79"/>
+<circle cx="26" cy="971" r="1.8" opacity="0.52"/>
+<circle cx="649" cy="761" r="0.6" opacity="0.54"/>
+<circle cx="941" cy="13" r="0.6" opacity="0.72" class="tw" style="animation-delay:1.6s"/>
+<circle cx="5" cy="743" r="1" opacity="0.54"/>
+<circle cx="26" cy="606" r="0.8" opacity="0.39"/>
+<circle cx="758" cy="902" r="0.6" opacity="0.68"/>
+<circle cx="98" cy="862" r="0.6" opacity="0.79"/>
+<circle cx="591" cy="165" r="0.8" opacity="0.78" class="tw" style="animation-delay:4.2s"/>
+<circle cx="537" cy="835" r="0.6" opacity="0.74"/>
+<circle cx="438" cy="930" r="0.6" opacity="0.53" class="tw" style="animation-delay:3.6s"/>
+<circle cx="612" cy="970" r="0.8" opacity="0.55"/>
+<circle cx="152" cy="13" r="1" opacity="0.7" class="tw" style="animation-delay:0.9s"/>
+<circle cx="140" cy="428" r="0.8" opacity="0.5" class="tw" style="animation-delay:1.9s"/>
+<circle cx="713" cy="351" r="1.3" opacity="0.54"/>
+<circle cx="59" cy="5" r="0.8" opacity="0.4"/>
+<circle cx="537" cy="61" r="0.6" opacity="0.49"/>
+<circle cx="438" cy="59" r="0.6" opacity="0.27"/>
+<circle cx="196" cy="932" r="1.8" opacity="0.85"/>
+<circle cx="91" cy="178" r="1" opacity="0.78"/>
+<circle cx="768" cy="126" r="0.6" opacity="0.54"/>
+<circle cx="847" cy="167" r="1.3" opacity="0.32"/>
+<circle cx="877" cy="330" r="0.6" opacity="0.35"/>
+<circle cx="579" cy="379" r="1.8" opacity="0.78"/>
+<circle cx="896" cy="195" r="1" opacity="0.49" class="tw" style="animation-delay:1.5s"/>
+<circle cx="636" cy="783" r="0.8" opacity="0.26"/>
+<circle cx="565" cy="51" r="1.8" opacity="0.71"/>
+<circle cx="918" cy="692" r="0.6" opacity="0.71"/>
+<circle cx="753" cy="982" r="1.3" opacity="0.63"/>
+<circle cx="841" cy="600" r="0.6" opacity="0.88"/>
+<circle cx="140" cy="222" r="0.8" opacity="0.54"/>
+<circle cx="34" cy="371" r="0.6" opacity="0.66"/>
+<circle cx="116" cy="969" r="0.6" opacity="0.4"/>
+<circle cx="490" cy="347" r="0.8" opacity="0.82" class="tw" style="animation-delay:5.9s"/>
+<circle cx="928" cy="206" r="0.8" opacity="0.58"/>
+<circle cx="381" cy="686" r="0.8" opacity="0.63"/>
+</svg>
+
+<div class="wrap">
+<nav><a href="../">&larr; Qualhalla</a></nav>
+
+<header class="hero">
+  <div class="sigil">
+    <svg viewBox="0 0 400 400" aria-hidden="true">
+      <g class="ring-outer">
+        <circle class="r" cx="200" cy="200" r="190"/>
+        <circle class="r" cx="200" cy="200" r="150" stroke-dasharray="1 5"/>
+        <text transform="rotate(0.0 200 200)" x="200" y="34" text-anchor="middle">174</text>
+<text transform="rotate(40.0 200 200)" x="200" y="34" text-anchor="middle">285</text>
+<text transform="rotate(80.0 200 200)" x="200" y="34" text-anchor="middle">396</text>
+<text transform="rotate(120.0 200 200)" x="200" y="34" text-anchor="middle">417</text>
+<text transform="rotate(160.0 200 200)" x="200" y="34" text-anchor="middle">528</text>
+<text transform="rotate(200.0 200 200)" x="200" y="34" text-anchor="middle">639</text>
+<text transform="rotate(240.0 200 200)" x="200" y="34" text-anchor="middle">741</text>
+<text transform="rotate(280.0 200 200)" x="200" y="34" text-anchor="middle">852</text>
+<text transform="rotate(320.0 200 200)" x="200" y="34" text-anchor="middle">963</text>
+      </g>
+      <g class="ring-inner">
+        <circle class="r" cx="200" cy="200" r="148"/>
+        <line transform="rotate(0 200 200)" x1="200" y1="52" x2="200" y2="62"/>
+<line transform="rotate(5 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(10 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(15 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(20 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(25 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(30 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(35 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(40 200 200)" x1="200" y1="52" x2="200" y2="62"/>
+<line transform="rotate(45 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(50 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(55 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(60 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(65 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(70 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(75 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(80 200 200)" x1="200" y1="52" x2="200" y2="62"/>
+<line transform="rotate(85 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(90 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(95 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(100 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(105 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(110 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(115 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(120 200 200)" x1="200" y1="52" x2="200" y2="62"/>
+<line transform="rotate(125 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(130 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(135 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(140 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(145 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(150 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(155 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(160 200 200)" x1="200" y1="52" x2="200" y2="62"/>
+<line transform="rotate(165 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(170 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(175 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(180 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(185 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(190 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(195 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(200 200 200)" x1="200" y1="52" x2="200" y2="62"/>
+<line transform="rotate(205 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(210 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(215 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(220 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(225 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(230 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(235 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(240 200 200)" x1="200" y1="52" x2="200" y2="62"/>
+<line transform="rotate(245 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(250 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(255 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(260 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(265 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(270 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(275 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(280 200 200)" x1="200" y1="52" x2="200" y2="62"/>
+<line transform="rotate(285 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(290 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(295 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(300 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(305 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(310 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(315 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(320 200 200)" x1="200" y1="52" x2="200" y2="62"/>
+<line transform="rotate(325 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(330 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(335 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(340 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(345 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(350 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+<line transform="rotate(355 200 200)" x1="200" y1="52" x2="200" y2="56"/>
+        <polygon points="200,68 314,266 86,266" class="r" style="stroke:var(--gold);fill:none;stroke-width:.6;opacity:.3"/>
+        <polygon points="200,332 86,134 314,134" class="r" style="stroke:var(--gold);fill:none;stroke-width:.6;opacity:.3"/>
+      </g>
+    </svg>
+    <img class="gem" src="https://play-lh.googleusercontent.com/M83XU8R3i0sPTpMOnLIZJQa05iX1T0bnXCLkPV5hK9tQcsQVF44XaYJLT_WkCcQbxakm6SEku6N2RN4e2PMP=s360" alt="Woo Woo Frequency Generator icon">
+  </div>
+
+  <h1>Woo Woo<br><em>Frequency Generator</em></h1>
+  <p class="lede">Sacred sound for meditation, chakra work, sound healing and deep rest. The Solfeggio scale, binaural beats, and any frequency you can name.</p>
+
+  <div class="stores">
+    <a href="https://play.google.com/store/apps/details?id=com.qualhalla.woowoofrequencygenerator">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 1.8c-.3.3-.4.7-.4 1.2v18c0 .5.1.9.4 1.2L13.7 12 3.6 1.8zm11.2 11.3 2.8 2.8-11.7 6.7 8.9-9.5zm3.9-3.9 3.1 1.8c.9.5.9 1.5 0 2l-3.1 1.8-3.1-3.1 3.1-2.5zM5.9 1.4l11.7 6.7-2.8 2.8-8.9-9.5z"/></svg>
+      Google Play
+    </a>
+    <a href="https://apps.apple.com/us/app/woo-woo-frequency-generator/id6794144015">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM13.9 4.9c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"/></svg>
+      App Store
+    </a>
+  </div>
+  <p class="price">Android &middot; iPhone &middot; iPad</p>
+</header>
+
+<div class="orn">The Solfeggio Scale</div>
+<ul class="scale">
+<li><span class="hz">174</span><span class="nm">Foundation</span></li>
+<li><span class="hz">285</span><span class="nm">Healing</span></li>
+<li><span class="hz">396</span><span class="nm">Liberation</span></li>
+<li><span class="hz">417</span><span class="nm">Change</span></li>
+<li><span class="hz">528</span><span class="nm">Transformation</span></li>
+<li><span class="hz">639</span><span class="nm">Connection</span></li>
+<li><span class="hz">741</span><span class="nm">Expression</span></li>
+<li><span class="hz">852</span><span class="nm">Intuition</span></li>
+<li><span class="hz">963</span><span class="nm">Unity</span></li>
+</ul>
+
+<div class="orn">What's inside</div>
+<ol class="feats">
+<li>
+  <span class="num">i</span>
+  <div><h3>Nine Solfeggio tones, ready when you are</h3><p>174 Hz through 963 Hz are built in as presets. Tap one and it's playing. No setup, no menus to dig through.</p></div>
+</li>
+<li>
+  <span class="num">ii</span>
+  <div><h3>Stack up to twenty tones</h3><p>Layer frequencies on top of each other and adjust each one on its own. A single clean 528 or a thick wall of harmonics, whatever your practice calls for.</p></div>
+</li>
+<li>
+  <span class="num">iii</span>
+  <div><h3>Binaural beats</h3><p>Send a slightly different frequency to each ear and let your brain find the difference. Best with headphones.</p></div>
+</li>
+<li>
+  <span class="num">iv</span>
+  <div><h3>Tuned to the thousandth</h3><p>Every tone can be set to three decimal places. If your work calls for 136.100 Hz, you get 136.100 Hz, not something close to it.</p></div>
+</li>
+<li>
+  <span class="num">v</span>
+  <div><h3>Four voices</h3><p>Sine for purity, plus triangle, square and sawtooth when you want something with more edge and overtone.</p></div>
+</li>
+<li>
+  <span class="num">vi</span>
+  <div><h3>Bilateral pulsing</h3><p>Sound that sways gently between the left and right ear, for when you want the tone to move with you.</p></div>
+</li>
+<li>
+  <span class="num">vii</span>
+  <div><h3>A ritual timer</h3><p>Set how long you want to sit, then put the phone down. The session ends on its own.</p></div>
+</li>
+<li>
+  <span class="num">viii</span>
+  <div><h3>Plays alongside your music</h3><p>Run your frequencies under Spotify, YouTube, a guided meditation, or anything else already playing.</p></div>
+</li>
+<li>
+  <span class="num">ix</span>
+  <div><h3>The crystal</h3><p>A slowly turning crystal to rest your eyes on while you listen. Something to come back to when the mind wanders.</p></div>
+</li>
+</ol>
+
+<div class="orn">A look inside</div>
+<div class="screens">
+<img src="https://play-lh.googleusercontent.com/XYUDRupBiY_bK8IsrdkkJM-LbPRRRJwRYgZQkPtVZqZz1vDQ8N2V4YE5nMcdNsC_ljagZm7PmdsciQCm3Wgh7WA=w360" alt="Woo Woo Frequency Generator screen" loading="lazy" width="180" height="400">
+<img src="https://play-lh.googleusercontent.com/dirlfzVmftqvGEWP0ZazqdUwV_ttXN1KOpX7Ehv5HiV2u0WQLLdkQ-ES6rKFLuVfI9P1HVOBqgsOZA5mggrzzA=w360" alt="Woo Woo Frequency Generator screen" loading="lazy" width="180" height="400">
+<img src="https://play-lh.googleusercontent.com/aLAjxl4mZdxu0wRm_OO2KYkjtQ1RqCtFmpgrCAsFLXg70q5ju2rMP3FMBeL2EJqS3LR_vKKgjhlrrr0UFpKCUl8=w360" alt="Woo Woo Frequency Generator screen" loading="lazy" width="180" height="400">
+<img src="https://play-lh.googleusercontent.com/3ZKJJdqStMkN5PHLmyqfcPz7pUK2_V22JBa_I3NsTUCD_adVWKQZozP1xItiALr-zPUac7U9ykg979olOEV5-A=w360" alt="Woo Woo Frequency Generator screen" loading="lazy" width="180" height="400">
+<img src="https://play-lh.googleusercontent.com/QPRZQKTCfOoM9uH27qzOgFbctmSSDTZgEMYjTOU879FaD7DutKitpWsPkOORrZUaCEMOGyI9GAjhVipLom7ofQ=w360" alt="Woo Woo Frequency Generator screen" loading="lazy" width="180" height="400">
+<img src="https://play-lh.googleusercontent.com/R902nCjcL2fq6a76qJJS164iT7qfMASMrontFGe26kbDGrOckifaN0XQUxxqrJNopTRJVZQ5keftfHC9cNNsXQ=w360" alt="Woo Woo Frequency Generator screen" loading="lazy" width="180" height="400">
 </div>
-</main>
-<footer>&copy; Qualhalla LLC</footer>
+
+<div class="orn">&#10022;</div>
+<section class="vow">
+  <p>No ads. No tracking. No analytics.<br>Buy it once and it's yours.</p>
+  <small>Made by one independent developer in St. Louis, as a clean and quiet tool for your practice.</small>
+</section>
+
+<footer>&copy; Qualhalla LLC &middot; <a href="../">More apps</a></footer>
+</div>
 </body>
 </html>
