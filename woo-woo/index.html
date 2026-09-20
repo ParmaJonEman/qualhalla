@@ -59,7 +59,13 @@ h1 em{font-style:italic;color:var(--lilac)}
 .scale li::before{content:"";position:absolute;top:0;left:50%;width:1px;height:10px;background:var(--gold)}
 .hz{display:block;font-size:1.45rem;color:var(--ink)}
 .nm{display:block;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-top:2px}
-.scale li:hover .hz{color:var(--lilac);text-shadow:0 0 18px var(--violet)}
+.tone{all:unset;display:block;width:100%;cursor:pointer;border-radius:10px;padding:0 0 8px}
+.tone:focus-visible{outline:1px solid var(--gold);outline-offset:4px}
+.tone .hz{transition:color .3s,text-shadow .3s}
+.scale li:hover .hz,.tone.ringing .hz{color:var(--lilac);text-shadow:0 0 18px var(--violet)}
+.tone.ringing .hz{animation:ring 1.5s ease-out}
+@keyframes ring{0%{text-shadow:0 0 30px var(--violet),0 0 8px var(--lilac)}100%{text-shadow:0 0 18px var(--violet)}}
+.hint{text-align:center;color:var(--dim);font-style:italic;font-size:.9rem;margin:-18px 0 20px}
 
 /* features */
 .feats{list-style:none;padding:0;margin:0}
@@ -71,7 +77,29 @@ h1 em{font-style:italic;color:var(--lilac)}
 
 /* screens */
 .screens{display:flex;gap:16px;overflow-x:auto;padding:6px 2px 18px;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
-.screens img{flex:0 0 auto;width:180px;height:auto;border-radius:18px;border:1px solid rgba(255,255,255,.08);scroll-snap-align:start;background:var(--deep)}
+.shot{flex:0 0 auto;padding:0;border:0;background:none;cursor:zoom-in;scroll-snap-align:start;border-radius:18px;transition:transform .25s}
+.shot:hover{transform:translateY(-3px)}
+.shot:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.screens img{display:block;width:180px;height:auto;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:var(--deep)}
+
+/* lightbox */
+.lightbox{border:0;padding:0;background:transparent;max-width:none;max-height:none;width:100vw;height:100vh;height:100dvh;
+  color:var(--ink);overflow:hidden}
+.lightbox[open]{display:flex;align-items:center;justify-content:center;animation:lbin .22s ease-out}
+.lightbox::backdrop{background:rgba(7,6,13,.9);backdrop-filter:blur(4px)}
+@keyframes lbin{from{opacity:0}}
+.lightbox figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:100%}
+.lb-img{display:block;max-height:calc(100dvh - 110px);max-width:min(92vw,520px);width:auto;height:auto;
+  border-radius:24px;border:1px solid var(--line);box-shadow:0 0 80px rgba(139,108,240,.25)}
+.lb-cap{max-width:30em;padding:0 20px;text-align:center;color:var(--dim);font-style:italic;font-size:.95rem}
+.lb-close,.lb-nav{position:absolute;display:flex;align-items:center;justify-content:center;background:rgba(17,13,31,.7);
+  color:var(--gold);border:1px solid var(--line);border-radius:999px;cursor:pointer;font-family:var(--serif);line-height:1;transition:.2s}
+.lb-close:hover,.lb-nav:hover{background:var(--gold);color:var(--night)}
+.lb-close:focus-visible,.lb-nav:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.lb-close{top:16px;right:16px;width:44px;height:44px;font-size:1.7rem}
+.lb-nav{top:50%;translate:0 -50%;width:48px;height:48px;font-size:2rem;padding-bottom:4px}
+.lb-prev{left:max(16px,calc(50% - 340px))}
+.lb-next{right:max(16px,calc(50% - 340px))}
 
 /* vow */
 .vow{text-align:center;padding:10px 0 20px}
@@ -85,6 +113,9 @@ footer a{color:var(--dim)}
   .scale{grid-template-columns:repeat(3,1fr);row-gap:14px}
   .feats li{grid-template-columns:44px 1fr;gap:12px}
   .screens img{width:150px}
+  .lb-nav{top:auto;bottom:18px;translate:none}
+  .lb-img{max-height:calc(100dvh - 210px)}
+  .lightbox figure{margin:44px 0 56px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -300,16 +331,17 @@ footer a{color:var(--dim)}
 </header>
 
 <div class="orn">The Solfeggio Scale</div>
+<p class="hint">Tap a tone to hear it.</p>
 <ul class="scale">
-<li><span class="hz">174</span><span class="nm">Foundation</span></li>
-<li><span class="hz">285</span><span class="nm">Healing</span></li>
-<li><span class="hz">396</span><span class="nm">Liberation</span></li>
-<li><span class="hz">417</span><span class="nm">Change</span></li>
-<li><span class="hz">528</span><span class="nm">Transformation</span></li>
-<li><span class="hz">639</span><span class="nm">Connection</span></li>
-<li><span class="hz">741</span><span class="nm">Expression</span></li>
-<li><span class="hz">852</span><span class="nm">Intuition</span></li>
-<li><span class="hz">963</span><span class="nm">Unity</span></li>
+<li><button type="button" class="tone" data-hz="174" aria-label="Play 174 hertz, Foundation"><span class="hz">174</span><span class="nm">Foundation</span></button></li>
+<li><button type="button" class="tone" data-hz="285" aria-label="Play 285 hertz, Healing"><span class="hz">285</span><span class="nm">Healing</span></button></li>
+<li><button type="button" class="tone" data-hz="396" aria-label="Play 396 hertz, Liberation"><span class="hz">396</span><span class="nm">Liberation</span></button></li>
+<li><button type="button" class="tone" data-hz="417" aria-label="Play 417 hertz, Change"><span class="hz">417</span><span class="nm">Change</span></button></li>
+<li><button type="button" class="tone" data-hz="528" aria-label="Play 528 hertz, Transformation"><span class="hz">528</span><span class="nm">Transformation</span></button></li>
+<li><button type="button" class="tone" data-hz="639" aria-label="Play 639 hertz, Connection"><span class="hz">639</span><span class="nm">Connection</span></button></li>
+<li><button type="button" class="tone" data-hz="741" aria-label="Play 741 hertz, Expression"><span class="hz">741</span><span class="nm">Expression</span></button></li>
+<li><button type="button" class="tone" data-hz="852" aria-label="Play 852 hertz, Intuition"><span class="hz">852</span><span class="nm">Intuition</span></button></li>
+<li><button type="button" class="tone" data-hz="963" aria-label="Play 963 hertz, Unity"><span class="hz">963</span><span class="nm">Unity</span></button></li>
 </ul>
 
 <div class="orn">What's inside</div>
@@ -354,13 +386,25 @@ footer a{color:var(--dim)}
 
 <div class="orn">A look inside</div>
 <div class="screens">
-<img src="https://play-lh.googleusercontent.com/XYUDRupBiY_bK8IsrdkkJM-LbPRRRJwRYgZQkPtVZqZz1vDQ8N2V4YE5nMcdNsC_ljagZm7PmdsciQCm3Wgh7WA=w360" alt="Woo Woo Frequency Generator screen" loading="lazy" width="180" height="400">
-<img src="https://play-lh.googleusercontent.com/dirlfzVmftqvGEWP0ZazqdUwV_ttXN1KOpX7Ehv5HiV2u0WQLLdkQ-ES6rKFLuVfI9P1HVOBqgsOZA5mggrzzA=w360" alt="Woo Woo Frequency Generator screen" loading="lazy" width="180" height="400">
-<img src="https://play-lh.googleusercontent.com/aLAjxl4mZdxu0wRm_OO2KYkjtQ1RqCtFmpgrCAsFLXg70q5ju2rMP3FMBeL2EJqS3LR_vKKgjhlrrr0UFpKCUl8=w360" alt="Woo Woo Frequency Generator screen" loading="lazy" width="180" height="400">
-<img src="https://play-lh.googleusercontent.com/3ZKJJdqStMkN5PHLmyqfcPz7pUK2_V22JBa_I3NsTUCD_adVWKQZozP1xItiALr-zPUac7U9ykg979olOEV5-A=w360" alt="Woo Woo Frequency Generator screen" loading="lazy" width="180" height="400">
-<img src="https://play-lh.googleusercontent.com/QPRZQKTCfOoM9uH27qzOgFbctmSSDTZgEMYjTOU879FaD7DutKitpWsPkOORrZUaCEMOGyI9GAjhVipLom7ofQ=w360" alt="Woo Woo Frequency Generator screen" loading="lazy" width="180" height="400">
-<img src="https://play-lh.googleusercontent.com/R902nCjcL2fq6a76qJJS164iT7qfMASMrontFGe26kbDGrOckifaN0XQUxxqrJNopTRJVZQ5keftfHC9cNNsXQ=w360" alt="Woo Woo Frequency Generator screen" loading="lazy" width="180" height="400">
+<button type="button" class="shot" data-full="screens/01-main-full.webp" aria-label="Enlarge: The main screen: the crystal, play and record, and the first tone"><img src="screens/01-main-thumb.webp" alt="The main screen: the crystal, play and record, and the first tone" loading="lazy" width="180" height="401"></button>
+<button type="button" class="shot" data-full="screens/02-tone-stack-full.webp" aria-label="Enlarge: Layering tones: a stack of Solfeggio frequencies, each one adjustable"><img src="screens/02-tone-stack-thumb.webp" alt="Layering tones: a stack of Solfeggio frequencies, each one adjustable" loading="lazy" width="180" height="401"></button>
+<button type="button" class="shot" data-full="screens/03-tone-controls-full.webp" aria-label="Enlarge: Tone controls with waveform, volume, pulse modulation and bilateral mode"><img src="screens/03-tone-controls-thumb.webp" alt="Tone controls with waveform, volume, pulse modulation and bilateral mode" loading="lazy" width="180" height="401"></button>
+<button type="button" class="shot" data-full="screens/04-favorites-full.webp" aria-label="Enlarge: Favorites: saved stacks alongside the built-in Solfeggio presets"><img src="screens/04-favorites-thumb.webp" alt="Favorites: saved stacks alongside the built-in Solfeggio presets" loading="lazy" width="180" height="401"></button>
+<button type="button" class="shot" data-full="screens/05-ritual-timer-full.webp" aria-label="Enlarge: The ritual timer, for a session that ends on its own"><img src="screens/05-ritual-timer-thumb.webp" alt="The ritual timer, for a session that ends on its own" loading="lazy" width="180" height="401"></button>
+<button type="button" class="shot" data-full="screens/06-settings-tones-full.webp" aria-label="Enlarge: Settings: how many tones to layer, and which waveforms to show"><img src="screens/06-settings-tones-thumb.webp" alt="Settings: how many tones to layer, and which waveforms to show" loading="lazy" width="180" height="401"></button>
+<button type="button" class="shot" data-full="screens/07-settings-precision-full.webp" aria-label="Enlarge: Settings: decimal precision and step size for fine tuning"><img src="screens/07-settings-precision-thumb.webp" alt="Settings: decimal precision and step size for fine tuning" loading="lazy" width="180" height="401"></button>
+<button type="button" class="shot" data-full="screens/08-ritual-builder-full.webp" aria-label="Enlarge: Ritual Builder: stacks sequenced on a timeline with crossfades between steps"><img src="screens/08-ritual-builder-thumb.webp" alt="Ritual Builder: stacks sequenced on a timeline with crossfades between steps" loading="lazy" width="180" height="401"></button>
 </div>
+
+<dialog class="lightbox" aria-label="Screenshot viewer">
+  <button type="button" class="lb-close" aria-label="Close">&times;</button>
+  <button type="button" class="lb-nav lb-prev" aria-label="Previous screenshot">&#8249;</button>
+  <figure>
+    <img class="lb-img" alt="">
+    <figcaption class="lb-cap"></figcaption>
+  </figure>
+  <button type="button" class="lb-nav lb-next" aria-label="Next screenshot">&#8250;</button>
+</dialog>
 
 <div class="orn">&#10022;</div>
 <section class="vow">
@@ -370,5 +414,103 @@ footer a{color:var(--dim)}
 
 <footer>&copy; Qualhalla LLC &middot; <a href="../">More apps</a></footer>
 </div>
+<script>
+(() => {
+  // Short pulse of each Solfeggio tone: fade in, a brief hold, fade out.
+  // Generated live by the browser, so there are no audio files to load.
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const tones = document.querySelectorAll('.tone');
+  if (!AC || !tones.length) return;
+
+  const PEAK = 0.12;      // kept low: a pure sine is piercing, and someone may be on headphones
+  const ATTACK = 0.08;    // ramping in and out avoids the click of an instant start or stop
+  const HOLD = 0.3;
+  const RELEASE = 1.1;
+  let ctx = null;
+
+  const play = hz => {
+    ctx = ctx || new AC();
+    if (ctx.state === 'suspended') ctx.resume();
+    const t = ctx.currentTime + 0.01;
+    const osc = ctx.createOscillator();
+    const amp = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = hz;
+    amp.gain.setValueAtTime(0, t);
+    amp.gain.linearRampToValueAtTime(PEAK, t + ATTACK);
+    amp.gain.setValueAtTime(PEAK, t + ATTACK + HOLD);
+    amp.gain.exponentialRampToValueAtTime(0.0001, t + ATTACK + HOLD + RELEASE);
+    osc.connect(amp).connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + ATTACK + HOLD + RELEASE + 0.05);
+    osc.onended = () => { osc.disconnect(); amp.disconnect(); };
+  };
+
+  tones.forEach(btn => {
+    let timer;
+    btn.addEventListener('click', () => {
+      play(Number(btn.dataset.hz));
+      // Glow for as long as it sounds, which also tells silent-mode
+      // iPhones (where Safari mutes this) that the tap registered.
+      btn.classList.remove('ringing');
+      void btn.offsetWidth;
+      btn.classList.add('ringing');
+      clearTimeout(timer);
+      timer = setTimeout(() => btn.classList.remove('ringing'), (ATTACK + HOLD + RELEASE) * 1000);
+    });
+  });
+})();
+</script>
+<script>
+(() => {
+  const shots = [...document.querySelectorAll('.shot')];
+  const box = document.querySelector('.lightbox');
+  if (!shots.length || !box || typeof box.showModal !== 'function') return;
+  const img = box.querySelector('.lb-img');
+  const cap = box.querySelector('.lb-cap');
+  let i = 0, opener = null, touchX = null;
+
+  const show = n => {
+    i = (n + shots.length) % shots.length;
+    const thumb = shots[i].querySelector('img');
+    img.src = shots[i].dataset.full;
+    img.alt = thumb.alt;
+    cap.textContent = thumb.alt;
+    // Warm the neighbours so arrowing through doesn't flash.
+    [i + 1, i - 1].forEach(k => { new Image().src = shots[(k + shots.length) % shots.length].dataset.full; });
+  };
+
+  shots.forEach((b, n) => b.addEventListener('click', () => {
+    opener = b; show(n); box.showModal();
+  }));
+
+  box.querySelector('.lb-close').addEventListener('click', () => box.close());
+  box.querySelector('.lb-prev').addEventListener('click', () => show(i - 1));
+  box.querySelector('.lb-next').addEventListener('click', () => show(i + 1));
+
+  // A tap anywhere except the image or a control closes. Checking for the
+  // dialog itself isn't enough: on phones the figure spans the full width,
+  // so taps beside the image land on it rather than on the backdrop.
+  box.addEventListener('click', e => {
+    if (e.target === img || e.target.closest('button')) return;
+    box.close();
+  });
+
+  box.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { show(i + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft')  { show(i - 1); e.preventDefault(); }
+  });
+
+  box.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  box.addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) show(dx < 0 ? i + 1 : i - 1);
+    touchX = null;
+  });
+
+  box.addEventListener('close', () => { img.removeAttribute('src'); if (opener) opener.focus(); });
+})();
+</script>
 </body>
 </html>
