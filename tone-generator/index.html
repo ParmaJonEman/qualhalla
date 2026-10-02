@@ -3,20 +3,427 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Freq&#x27;n Awesome Tone Generator – Qualhalla</title>
-<link rel="stylesheet" href="../style.css">
+<title>Freq'n Awesome Tone Generator</title>
+<meta name="description" content="A test tone generator for speaker repair and car audio. Sine, square and sawtooth from 1 Hz to 22 kHz, bass and full-range sweeps, presets, and a two-tone Pro mode. Works offline.">
+<meta property="og:title" content="Freq'n Awesome Tone Generator">
+<meta property="og:description" content="Test tones for speaker work. 1 Hz to 22 kHz, sweeps, presets, offline.">
+<meta property="og:image" content="https://play-lh.googleusercontent.com/iy5xdZKqBS2P4VBfHhxDNBL4vLDM3rGuTl_CZsHdZ7oJ0wIuxbxT5gH2KJ9FEwSOEjTq04JuuUK5ENFJ3DrmAuo=s512">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f2f0e9; --sheet:#faf9f5; --ink:#1a1c1e; --muted:#5c6166; --rule:#cdc8bb; --rule-2:#e2ded3;
+  --accent:#0b7383; --trace:#1aa9bd; --warn:#a2560c; --warn-bg:#f6ead9;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#141618; --sheet:#1b1e21; --ink:#e4e2dc; --muted:#9aa0a6; --rule:#3a3f44; --rule-2:#2a2e32;
+    --accent:#4cc6d8; --trace:#36bfd2; --warn:#e3a15a; --warn-bg:#2a2218;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html{background:var(--paper)}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--sans);-webkit-text-size-adjust:100%}
+a{color:var(--accent);text-underline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+.mono,code,td.v,.num{font-family:var(--mono);font-feature-settings:"zero" 1}
+
+/* top bar */
+.top{border-bottom:1px solid var(--rule)}
+.top .wrap{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-top:14px;padding-bottom:12px}
+.brand{font-weight:600;color:var(--ink);text-decoration:none;letter-spacing:.01em}
+.top nav{display:flex;gap:22px;font-size:.88rem}
+.top nav a{color:var(--muted);text-decoration:none}
+.top nav a:hover{color:var(--ink)}
+
+/* intro */
+.intro{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:56px;align-items:start;padding:56px 0 40px}
+.kicker{font:500 .78rem/1 var(--mono);color:var(--muted);letter-spacing:.06em;margin:0 0 18px;display:flex;align-items:center;gap:10px}
+.kicker img{width:28px;height:28px;border-radius:7px}
+h1{font-size:2.6rem;line-height:1.08;font-weight:600;letter-spacing:-.02em;margin:0 0 20px;max-width:13ch}
+.lede{font-size:1.14rem;color:var(--ink);max-width:34em;margin:0 0 28px}
+.get{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.get a{display:inline-flex;flex-direction:column;justify-content:center;min-width:168px;padding:9px 16px 10px;border:1.5px solid var(--ink);border-radius:6px;color:var(--ink);text-decoration:none;line-height:1.2}
+.get a small{font-size:.72rem;color:var(--muted)}
+.get a span{font-weight:600;font-size:1.02rem}
+.get a:hover{background:var(--ink);color:var(--paper)}
+.get a:hover small{color:inherit;opacity:.75}
+.fine{font-size:.85rem;color:var(--muted);margin:0}
+.phone{margin:0}
+.phone button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
+.phone img{display:block;width:100%;height:auto;border-radius:22px;border:1px solid var(--rule);background:#000}
+.phone figcaption{font:400 .75rem/1.4 var(--mono);color:var(--muted);margin-top:10px}
+
+/* sections */
+section{padding:44px 0;border-top:1px solid var(--rule)}
+.head{display:grid;grid-template-columns:200px minmax(0,1fr);gap:32px}
+h2{font-size:1rem;font-weight:600;margin:0;letter-spacing:.01em}
+h2 .n{display:block;font:400 .75rem/1 var(--mono);color:var(--muted);margin-bottom:8px}
+.body>p:first-child{margin-top:0}
+.body p{max-width:38em}
+
+/* range figure */
+.fig{margin:0;background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:18px 18px 12px}
+.fig .scroll{overflow-x:auto}
+.range{display:block;width:100%;min-width:640px;height:auto}
+.range .g{stroke:var(--rule-2);stroke-width:1}
+.range .g.M{stroke:var(--rule)}
+.range .ax{stroke:var(--muted);stroke-width:1}
+.range .t{font:400 12px var(--mono);fill:var(--muted)}
+.range .l{font:500 12.5px var(--mono);fill:var(--ink)}
+.range .b0{fill:var(--rule-2);stroke:var(--rule)}
+.range .b1{fill:none;stroke:var(--trace);stroke-width:1.5}
+.range .b2{fill:var(--trace);opacity:.35;stroke:var(--trace)}
+.range .p{fill:var(--paper);stroke:var(--ink);stroke-width:1.4}
+.fig figcaption{font:400 .78rem/1.5 var(--mono);color:var(--muted);margin-top:8px}
+
+/* spec table */
+table{border-collapse:collapse;width:100%}
+.spec th,.spec td{text-align:left;vertical-align:top;padding:9px 0;border-bottom:1px solid var(--rule-2)}
+.spec tr:first-child th,.spec tr:first-child td{border-top:1px solid var(--ink)}
+.spec tr:last-child th,.spec tr:last-child td{border-bottom:1px solid var(--ink)}
+.spec th{font-weight:500;width:34%;padding-right:20px;color:var(--muted);font-size:.94rem}
+.spec td{font-size:.95rem}
+.spec td.v{font-size:.9rem}
+.tag{display:inline-block;font:500 .66rem/1 var(--mono);letter-spacing:.06em;padding:3px 5px 2px;border:1px solid currentColor;border-radius:3px;color:var(--accent);vertical-align:2px;margin-left:6px}
+.note{font-size:.82rem;color:var(--muted);margin-top:12px}
+
+/* bench notes */
+.procs{list-style:none;margin:0;padding:0;counter-reset:p}
+.procs li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 12px;padding:18px 0;border-bottom:1px solid var(--rule-2)}
+.procs li:first-child{padding-top:0}
+.procs li::before{counter-increment:p;content:counter(p,decimal-leading-zero);font:400 .82rem/1.9 var(--mono);color:var(--muted);grid-row:span 2}
+.procs h3{font-size:1.02rem;font-weight:600;margin:0}
+.procs p{margin:2px 0 0;max-width:38em}
+.caution{margin-top:28px;border-left:3px solid var(--warn);background:var(--warn-bg);padding:16px 20px;border-radius:0 4px 4px 0}
+.caution strong{display:block;font:500 .78rem/1 var(--mono);letter-spacing:.08em;color:var(--warn);margin-bottom:8px}
+.caution p{margin:0 0 8px;max-width:40em}
+.caution p:last-child{margin-bottom:0}
+
+/* screens */
+.shots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;margin:0;padding:0;list-style:none}
+.shots button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;text-align:left;color:inherit;font:inherit}
+.shots img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--rule);background:#000}
+.shots button:hover img,.shots button:focus-visible img{border-color:var(--accent)}
+.shots span{display:block;font:400 .74rem/1.45 var(--mono);color:var(--muted);margin-top:8px}
+
+/* free vs pro */
+.cmp th,.cmp td{padding:8px 0;border-bottom:1px solid var(--rule-2);text-align:left;font-size:.95rem}
+.cmp thead th{font:500 .74rem/1 var(--mono);letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--ink);padding-bottom:10px}
+.cmp td.c,.cmp th.c{width:70px;text-align:center;font-family:var(--mono)}
+.cmp td.no{color:var(--muted)}
+.cmp tbody tr:last-child td{border-bottom:1px solid var(--ink)}
+
+footer{border-top:1px solid var(--rule);padding:22px 0 40px;font-size:.85rem;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer a{color:var(--muted)}
+
+/* lightbox */
+.lightbox{border:0;padding:0;background:transparent;max-width:100vw;max-height:100vh;width:100vw;height:100vh;margin:0}
+.lightbox::backdrop{background:rgba(12,13,14,.88)}
+.lightbox figure{margin:0;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 64px}
+.lb-img{max-height:calc(100vh - 110px);max-width:100%;width:auto;border-radius:16px}
+.lb-cap{font:400 .8rem/1.4 var(--mono);color:#c9ccd0;margin-top:12px;text-align:center;max-width:40em}
+.lb-close,.lb-nav{position:fixed;background:none;border:0;color:#e6e6e6;font:300 2.2rem/1 var(--sans);cursor:pointer;padding:10px 14px}
+.lb-close{top:8px;right:10px}
+.lb-prev{left:6px;top:50%;translate:0 -50%}
+.lb-next{right:6px;top:50%;translate:0 -50%}
+
+@media (max-width:860px){
+  .intro{grid-template-columns:minmax(0,1fr);gap:36px;padding-top:40px}
+  .phone{max-width:260px}
+  .head{grid-template-columns:minmax(0,1fr);gap:18px}
+  .shots{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .wrap{padding:0 16px}
+  .top nav{display:none}
+  h1{font-size:2.05rem}
+  .lede{font-size:1.05rem}
+  .get a{flex:1 1 140px;min-width:0}
+  .shots{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .spec th{width:42%;padding-right:12px}
+  .lightbox figure{padding:48px 8px 20px}
+  .lb-nav{display:none}
+}
+</style>
 </head>
 <body>
-<header><a href="../">Qualhalla</a></header>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../">Qualhalla</a>
+    <nav aria-label="On this page">
+      <a href="#specs">Specs</a>
+      <a href="#bench">Bench notes</a>
+      <a href="#screens">Screens</a>
+      <a href="#pro">Free &amp; Pro</a>
+    </nav>
+  </div>
+</header>
+
 <main>
-<img class="icon" src="https://play-lh.googleusercontent.com/iy5xdZKqBS2P4VBfHhxDNBL4vLDM3rGuTl_CZsHdZ7oJ0wIuxbxT5gH2KJ9FEwSOEjTq04JuuUK5ENFJ3DrmAuo=s256" alt="Freq&#x27;n Awesome Tone Generator icon" width="128" height="128">
-<h1>Freq&#x27;n Awesome Tone Generator</h1>
-<p>Generate precise test tones from 1 Hz to 22 kHz for checking speakers and sound systems.</p>
-<div class="links">
-<a class="btn" href="https://play.google.com/store/apps/details?id=com.qualhalla.tonegenerator">Get it on Google Play</a>
-<a class="btn" href="https://apps.apple.com/us/app/freqn-awesome-tone-generator/id6753634359">Download on the App Store</a>
+<div class="wrap">
+
+<div class="intro">
+  <div>
+    <p class="kicker"><img src="https://play-lh.googleusercontent.com/iy5xdZKqBS2P4VBfHhxDNBL4vLDM3rGuTl_CZsHdZ7oJ0wIuxbxT5gH2KJ9FEwSOEjTq04JuuUK5ENFJ3DrmAuo=s96" alt="" width="28" height="28">FREQ'N AWESOME TONE GENERATOR</p>
+    <h1>Test tones for speaker work.</h1>
+    <p class="lede">Sine, square and sawtooth from 1&nbsp;Hz to 22&nbsp;kHz. Sweeps for finding rattles and coil rub, presets for the frequencies you keep coming back to, and a two-tone Pro mode. No account, no connection needed, so it works in a garage or a driveway with no signal.</p>
+    <div class="get">
+      <a href="https://play.google.com/store/apps/details?id=com.qualhalla.tonegenerator"><small>Get it on</small><span>Google Play</span></a>
+      <a href="https://apps.apple.com/us/app/freqn-awesome-tone-generator/id6753634359"><small>Download on the</small><span>App Store</span></a>
+    </div>
+    <p class="fine">Free. Pro Mode is a one-time purchase, not a subscription.</p>
+  </div>
+  <figure class="phone">
+    <button type="button" class="shot" data-full="screens/01-main-sine-full.webp" aria-label="Enlarge: Main screen, 200 Hz sine"><img src="screens/01-main-sine-thumb.webp" alt="Main screen playing a 200 Hz sine wave, with frequency and volume sliders, waveform buttons and presets" width="360" height="780"></button>
+    <figcaption>Main screen, 200&nbsp;Hz sine</figcaption>
+  </figure>
+</div>
+
+<section id="specs">
+  <div class="head">
+    <h2><span class="n">01</span>Specifications</h2>
+    <div class="body">
+      <figure class="fig">
+        <div class="scroll">
+        <svg class="range" viewBox="0 0 960 178" role="img" aria-labelledby="fig1">
+<line class="g M" x1="24.0" x2="24.0" y1="14" y2="150"/>
+<line class="g" x1="87.2" x2="87.2" y1="30" y2="150"/>
+<line class="g" x1="124.2" x2="124.2" y1="30" y2="150"/>
+<line class="g" x1="150.4" x2="150.4" y1="30" y2="150"/>
+<line class="g" x1="170.8" x2="170.8" y1="30" y2="150"/>
+<line class="g" x1="187.4" x2="187.4" y1="30" y2="150"/>
+<line class="g" x1="201.5" x2="201.5" y1="30" y2="150"/>
+<line class="g" x1="213.7" x2="213.7" y1="30" y2="150"/>
+<line class="g" x1="224.4" x2="224.4" y1="30" y2="150"/>
+<line class="g M" x1="234.0" x2="234.0" y1="14" y2="150"/>
+<line class="g" x1="297.2" x2="297.2" y1="30" y2="150"/>
+<line class="g" x1="334.2" x2="334.2" y1="30" y2="150"/>
+<line class="g" x1="360.5" x2="360.5" y1="30" y2="150"/>
+<line class="g" x1="380.8" x2="380.8" y1="30" y2="150"/>
+<line class="g" x1="397.4" x2="397.4" y1="30" y2="150"/>
+<line class="g" x1="411.5" x2="411.5" y1="30" y2="150"/>
+<line class="g" x1="423.7" x2="423.7" y1="30" y2="150"/>
+<line class="g" x1="434.4" x2="434.4" y1="30" y2="150"/>
+<line class="g M" x1="444.0" x2="444.0" y1="14" y2="150"/>
+<line class="g" x1="507.3" x2="507.3" y1="30" y2="150"/>
+<line class="g" x1="544.2" x2="544.2" y1="30" y2="150"/>
+<line class="g" x1="570.5" x2="570.5" y1="30" y2="150"/>
+<line class="g" x1="590.8" x2="590.8" y1="30" y2="150"/>
+<line class="g" x1="607.5" x2="607.5" y1="30" y2="150"/>
+<line class="g" x1="621.5" x2="621.5" y1="30" y2="150"/>
+<line class="g" x1="633.7" x2="633.7" y1="30" y2="150"/>
+<line class="g" x1="644.5" x2="644.5" y1="30" y2="150"/>
+<line class="g M" x1="654.1" x2="654.1" y1="14" y2="150"/>
+<line class="g" x1="717.3" x2="717.3" y1="30" y2="150"/>
+<line class="g" x1="754.3" x2="754.3" y1="30" y2="150"/>
+<line class="g" x1="780.5" x2="780.5" y1="30" y2="150"/>
+<line class="g" x1="800.9" x2="800.9" y1="30" y2="150"/>
+<line class="g" x1="817.5" x2="817.5" y1="30" y2="150"/>
+<line class="g" x1="831.6" x2="831.6" y1="30" y2="150"/>
+<line class="g" x1="843.7" x2="843.7" y1="30" y2="150"/>
+<line class="g" x1="854.5" x2="854.5" y1="30" y2="150"/>
+<line class="g M" x1="864.1" x2="864.1" y1="14" y2="150"/>
+<line class="g" x1="927.3" x2="927.3" y1="30" y2="150"/>
+<text class="t" x="24.0" y="170" text-anchor="start">1 Hz</text>
+<text class="t" x="234.0" y="170" text-anchor="middle">10</text>
+<text class="t" x="444.0" y="170" text-anchor="middle">100</text>
+<text class="t" x="654.1" y="170" text-anchor="middle">1k</text>
+<text class="t" x="864.1" y="170" text-anchor="middle">10k</text>
+<text class="t" x="936.0" y="170" text-anchor="end">22k</text>
+<line class="ax" x1="24" x2="936" y1="150" y2="150"/>
+<rect class="b0" x="24.0" y="26" width="912.0" height="22"/><text class="l" x="30.0" y="42">Output range  1 Hz – 22 kHz</text>
+<rect class="b1" x="297.2" y="56" width="630.1" height="22"/><text class="l" x="303.2" y="72">Full sweep  20 Hz – 20 kHz, 30 s (default)</text>
+<rect class="b2" x="334.2" y="86" width="109.8" height="22"/>
+<text class="l" x="452.0" y="102">Bass sweep  30 – 100 Hz, 10 s</text>
+<circle class="p" cx="360.5" cy="128" r="3.2"/>
+<circle class="p" cx="380.8" cy="128" r="3.2"/>
+<circle class="p" cx="397.4" cy="128" r="3.2"/>
+<circle class="p" cx="411.5" cy="128" r="3.2"/>
+<circle class="p" cx="423.7" cy="128" r="3.2"/>
+<circle class="p" cx="516.0" cy="128" r="3.2"/>
+<circle class="p" cx="579.2" cy="128" r="3.2"/>
+<circle class="p" cx="654.1" cy="128" r="3.2"/>
+<circle class="p" cx="864.1" cy="128" r="3.2"/>
+<text class="l" x="348.5" y="132" text-anchor="end">Built-in presets</text>
+</svg>
+        </div>
+        <figcaption id="fig1">Fig. 1 &nbsp;Output range, default sweep spans and built-in presets on a log frequency axis. Sweep limits and durations can be changed in Settings.</figcaption>
+      </figure>
+
+      <table class="spec" style="margin-top:28px">
+        <tr><th>Frequency range</th><td class="v">1 Hz – 22 kHz, min/max limits user-adjustable</td></tr>
+        <tr><th>Audio output</th><td class="v">44.1 kHz, 16-bit PCM</td></tr>
+        <tr><th>Waveforms</th><td>Sine, square, sawtooth</td></tr>
+        <tr><th>Frequency control</th><td>Slider with logarithmic, exponential or linear response; fine &minus;/+ steps</td></tr>
+        <tr><th>Full-range sweep</th><td class="v">20 Hz – 20 kHz over 30 s (default)</td></tr>
+        <tr><th>Bass sweep</th><td class="v">30 – 100 Hz over 10 s (default)</td></tr>
+        <tr><th>Presets</th><td><span class="mono">40, 50, 60, 70, 80, 220, 440, 1k, 10k&nbsp;Hz</span> built in; up to 15 of your own</td></tr>
+        <tr><th>Display</th><td>Live waveform trace</td></tr>
+        <tr><th>Second tone<span class="tag">PRO</span></th><td>Independent frequency, waveform and level</td></tr>
+        <tr><th>Pulse<span class="tag">PRO</span></th><td class="v">Rate up to 20 Hz, duty cycle 10 – 90 %</td></tr>
+        <tr><th>Phase invert<span class="tag">PRO</span></th><td>Per signal</td></tr>
+        <tr><th>Musical notes<span class="tag">PRO</span></th><td>Chromatic, C to B, octaves 1 – 8</td></tr>
+        <tr><th>Recording<span class="tag">PRO</span></th><td>Save tones as WAV files</td></tr>
+        <tr><th>Network</th><td>Not required</td></tr>
+        <tr><th>Platforms</th><td>Android 7.0 and later; iPhone</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="bench">
+  <div class="head">
+    <h2><span class="n">02</span>Bench notes</h2>
+    <div class="body">
+      <ol class="procs">
+        <li>
+          <h3>After a refoam</h3>
+          <p>Run the bass sweep at a modest level with the driver face up on the bench. Rub from an off-center coil, or a surround glued slightly crooked, shows up as a scratchy edge riding on the tone. When you hear it, stop the sweep and park on that frequency with the slider or the &minus;/+ buttons.</p>
+        </li>
+        <li>
+          <h3>Chasing rattles</h3>
+          <p>Door cards, license plates, trim panels, the sub box itself. Sweep 30 – 100&nbsp;Hz with the system turned up, note where the buzz starts, then hold that frequency and press on panels until it stops.</p>
+        </li>
+        <li>
+          <h3>Checking each driver</h3>
+          <p>Walk a sine from 50&nbsp;Hz up past 10&nbsp;kHz at low volume and listen near each driver in turn. A dead tweeter goes quiet at the top; a damaged woofer usually sounds rough or distorted at the bottom, well before it should.</p>
+        </li>
+        <li>
+          <h3>Two signals at once <span class="tag">PRO</span></h3>
+          <p>Two tones a few hertz apart beat audibly, which makes small differences easy to hear. Set both to the same frequency and invert one, and they cancel. Pulse mode gives you a repeating tone burst instead of a steady signal.</p>
+        </li>
+        <li>
+          <h3>Taking a signal with you <span class="tag">PRO</span></h3>
+          <p>Record a tone to a WAV file and play it from anything with a USB port or an aux input: a head unit, a DAW, the mixer at a gig.</p>
+        </li>
+      </ol>
+
+      <div class="caution" role="note">
+        <strong>LEVEL</strong>
+        <p>Turn it down first. A steady tone puts continuous power into a voice coil in a way music never does, and tweeters are the first to cook. Square and sawtooth waves carry strong harmonics well above the fundamental: a 2&nbsp;kHz square wave also puts real energy into the tweeter at 6 and 10&nbsp;kHz.</p>
+        <p>A phone's own speaker gives out below a few hundred hertz, so a 40&nbsp;Hz tone through it sounds like nothing. Use a cable into the system you're testing, or Bluetooth if that's what you've got.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="screens">
+  <div class="head">
+    <h2><span class="n">03</span>Screens</h2>
+    <div class="body">
+      <ul class="shots">
+        <li><button type="button" class="shot" data-full="screens/02-main-sawtooth-full.webp" aria-label="Enlarge: Main screen, sawtooth wave"><img src="screens/02-main-sawtooth-thumb.webp" alt="Main screen with a 200 Hz sawtooth on the waveform display" loading="lazy" width="360" height="780"><span>Sawtooth at 200&nbsp;Hz</span></button></li>
+        <li><button type="button" class="shot" data-full="screens/03-settings-range-full.webp" aria-label="Enlarge: Settings, frequency range and sweeps"><img src="screens/03-settings-range-thumb.webp" alt="Settings: minimum and maximum frequency, slider curve, and sweep range and duration" loading="lazy" width="360" height="780"><span>Range, slider curve, sweeps</span></button></li>
+        <li><button type="button" class="shot" data-full="screens/04-pro-dual-tone-full.webp" aria-label="Enlarge: Pro Mode, two tones"><img src="screens/04-pro-dual-tone-thumb.webp" alt="Pro Mode: 1000 Hz primary and 440 Hz secondary signals, with pulse rate and duty cycle" loading="lazy" width="360" height="780"><span>Pro: two tones, pulse</span></button></li>
+        <li><button type="button" class="shot" data-full="screens/05-pro-notes-full.webp" aria-label="Enlarge: Pro Mode, musical notes"><img src="screens/05-pro-notes-thumb.webp" alt="Pro Mode: primary and secondary signal controls with invert, and the musical note keys with octave select" loading="lazy" width="360" height="780"><span>Pro: invert, notes by octave</span></button></li>
+        <li><button type="button" class="shot" data-full="screens/01-main-sine-full.webp" aria-label="Enlarge: Main screen, sine wave"><img src="screens/01-main-sine-thumb.webp" alt="Main screen playing a 200 Hz sine wave, with frequency and volume sliders, waveform buttons and presets" loading="lazy" width="360" height="780"><span>Sine at 200&nbsp;Hz</span></button></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="pro">
+  <div class="head">
+    <h2><span class="n">04</span>Free &amp; Pro</h2>
+    <div class="body">
+      <p>Everything you need to test a speaker is free. Pro adds a second signal and the tools that go with it, and it's a single purchase inside the app.</p>
+      <table class="cmp">
+        <thead><tr><th>Feature</th><th class="c">FREE</th><th class="c">PRO</th></tr></thead>
+        <tbody>
+          <tr><td>Single tone, 1 Hz – 22 kHz</td><td class="c">yes</td><td class="c">yes</td></tr>
+          <tr><td>Sine, square, sawtooth</td><td class="c">yes</td><td class="c">yes</td></tr>
+          <tr><td>Full-range and bass sweeps</td><td class="c">yes</td><td class="c">yes</td></tr>
+          <tr><td>Built-in and custom presets</td><td class="c">yes</td><td class="c">yes</td></tr>
+          <tr><td>Log, exponential or linear slider</td><td class="c">yes</td><td class="c">yes</td></tr>
+          <tr><td>Live waveform display</td><td class="c">yes</td><td class="c">yes</td></tr>
+          <tr><td>Second independent tone</td><td class="c no">&mdash;</td><td class="c">yes</td></tr>
+          <tr><td>Pulsed tones, rate and duty cycle</td><td class="c no">&mdash;</td><td class="c">yes</td></tr>
+          <tr><td>Phase invert</td><td class="c no">&mdash;</td><td class="c">yes</td></tr>
+          <tr><td>Musical notes by octave</td><td class="c no">&mdash;</td><td class="c">yes</td></tr>
+          <tr><td>Record to WAV</td><td class="c no">&mdash;</td><td class="c">yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 </div>
 </main>
-<footer>&copy; Qualhalla LLC</footer>
+
+<dialog class="lightbox" aria-label="Screenshot viewer">
+  <button type="button" class="lb-close" aria-label="Close">&times;</button>
+  <button type="button" class="lb-nav lb-prev" aria-label="Previous screenshot">&#8249;</button>
+  <figure>
+    <img class="lb-img" alt="">
+    <figcaption class="lb-cap"></figcaption>
+  </figure>
+  <button type="button" class="lb-nav lb-next" aria-label="Next screenshot">&#8250;</button>
+</dialog>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; Qualhalla LLC</span>
+    <a href="../">Other Qualhalla apps</a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  // The hero phone and the screens grid share one viewer. The hero image
+  // repeats the last grid item, so skip duplicates when stepping through.
+  const all = [...document.querySelectorAll('.shot')];
+  const seen = new Set();
+  const shots = all.filter(b => !seen.has(b.dataset.full) && seen.add(b.dataset.full));
+  const box = document.querySelector('.lightbox');
+  if (!shots.length || !box || typeof box.showModal !== 'function') return;
+  const img = box.querySelector('.lb-img');
+  const cap = box.querySelector('.lb-cap');
+  let i = 0, opener = null, touchX = null;
+
+  const show = n => {
+    i = (n + shots.length) % shots.length;
+    const thumb = shots[i].querySelector('img');
+    img.src = shots[i].dataset.full;
+    img.alt = thumb.alt;
+    cap.textContent = thumb.alt;
+    [i + 1, i - 1].forEach(k => { new Image().src = shots[(k + shots.length) % shots.length].dataset.full; });
+  };
+
+  all.forEach(b => b.addEventListener('click', () => {
+    opener = b;
+    show(shots.findIndex(s => s.dataset.full === b.dataset.full));
+    box.showModal();
+  }));
+
+  box.querySelector('.lb-close').addEventListener('click', () => box.close());
+  box.querySelector('.lb-prev').addEventListener('click', () => show(i - 1));
+  box.querySelector('.lb-next').addEventListener('click', () => show(i + 1));
+  box.addEventListener('click', e => {
+    if (e.target === img || e.target.closest('button')) return;
+    box.close();
+  });
+  box.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { show(i + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft')  { show(i - 1); e.preventDefault(); }
+  });
+  box.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  box.addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) show(dx < 0 ? i + 1 : i - 1);
+    touchX = null;
+  });
+  box.addEventListener('close', () => { img.removeAttribute('src'); if (opener) opener.focus(); });
+})();
+</script>
 </body>
 </html>

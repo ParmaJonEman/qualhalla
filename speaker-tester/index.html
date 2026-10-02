@@ -3,19 +3,422 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Freq&#x27;n Truth Speaker Tester – Qualhalla</title>
-<link rel="stylesheet" href="../style.css">
+<title>Freq'n Truth Speaker Tester</title>
+<meta name="description" content="Measure your speakers' frequency response with your phone. Log chirp sweep 20 Hz to 20 kHz, stereo left/right overlay, averaging, smoothing, mic calibration files and data export. Android.">
+<meta property="og:title" content="Freq'n Truth Speaker Tester">
+<meta property="og:description" content="A frequency response plot from your phone. 20 Hz to 20 kHz, left vs right, exportable data.">
+<meta property="og:image" content="https://play-lh.googleusercontent.com/4D_83mtbOfXM-x69Egy3xT_35G5wK92BMYz3AH9fQPTYrdzIBJozFDh4qfsp0gd5r71JVELyhoEES9XOU2KcxAg=s512">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f2f0e9; --sheet:#faf9f5; --ink:#1a1c1e; --muted:#5c6166; --rule:#cdc8bb; --rule-2:#e2ded3;
+  --accent:#0b7383; --trace:#1aa9bd; --warn:#a2560c; --warn-bg:#f6ead9;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --paper:#141618; --sheet:#1b1e21; --ink:#e4e2dc; --muted:#9aa0a6; --rule:#3a3f44; --rule-2:#2a2e32;
+    --accent:#4cc6d8; --trace:#36bfd2; --warn:#e3a15a; --warn-bg:#2a2218;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html{background:var(--paper)}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--sans);-webkit-text-size-adjust:100%}
+a{color:var(--accent);text-underline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+.mono,code,td.v,.num{font-family:var(--mono);font-feature-settings:"zero" 1}
+
+/* top bar */
+.top{border-bottom:1px solid var(--rule)}
+.top .wrap{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-top:14px;padding-bottom:12px}
+.brand{font-weight:600;color:var(--ink);text-decoration:none;letter-spacing:.01em}
+.top nav{display:flex;gap:22px;font-size:.88rem}
+.top nav a{color:var(--muted);text-decoration:none}
+.top nav a:hover{color:var(--ink)}
+
+/* intro */
+.intro{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:56px;align-items:start;padding:56px 0 40px}
+.kicker{font:500 .78rem/1 var(--mono);color:var(--muted);letter-spacing:.06em;margin:0 0 18px;display:flex;align-items:center;gap:10px}
+.kicker img{width:28px;height:28px;border-radius:7px}
+h1{font-size:2.6rem;line-height:1.08;font-weight:600;letter-spacing:-.02em;margin:0 0 20px;max-width:13ch}
+.lede{font-size:1.14rem;color:var(--ink);max-width:34em;margin:0 0 28px}
+.get{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.get a{display:inline-flex;flex-direction:column;justify-content:center;min-width:168px;padding:9px 16px 10px;border:1.5px solid var(--ink);border-radius:6px;color:var(--ink);text-decoration:none;line-height:1.2}
+.get a small{font-size:.72rem;color:var(--muted)}
+.get a span{font-weight:600;font-size:1.02rem}
+.get a:hover{background:var(--ink);color:var(--paper)}
+.get a:hover small{color:inherit;opacity:.75}
+.fine{font-size:.85rem;color:var(--muted);margin:0}
+.phone{margin:0}
+.phone button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
+.phone img{display:block;width:100%;height:auto;border-radius:22px;border:1px solid var(--rule);background:#000}
+.phone figcaption{font:400 .75rem/1.4 var(--mono);color:var(--muted);margin-top:10px}
+
+/* sections */
+section{padding:44px 0;border-top:1px solid var(--rule)}
+.head{display:grid;grid-template-columns:200px minmax(0,1fr);gap:32px}
+h2{font-size:1rem;font-weight:600;margin:0;letter-spacing:.01em}
+h2 .n{display:block;font:400 .75rem/1 var(--mono);color:var(--muted);margin-bottom:8px}
+.body>p:first-child{margin-top:0}
+.body p{max-width:38em}
+
+/* range figure */
+.fig{margin:0;background:var(--sheet);border:1px solid var(--rule);border-radius:4px;padding:18px 18px 12px}
+.fig .scroll{overflow-x:auto}
+.range{display:block;width:100%;min-width:640px;height:auto}
+.range .g{stroke:var(--rule-2);stroke-width:1}
+.range .g.M{stroke:var(--rule)}
+.range .ax{stroke:var(--muted);stroke-width:1}
+.range .t{font:400 12px var(--mono);fill:var(--muted)}
+.range .l{font:500 12.5px var(--mono);fill:var(--ink)}
+.range .b0{fill:var(--rule-2);stroke:var(--rule)}
+.range .b1{fill:none;stroke:var(--trace);stroke-width:1.5}
+.range .b2{fill:var(--trace);opacity:.35;stroke:var(--trace)}
+.range .p{fill:var(--paper);stroke:var(--ink);stroke-width:1.4}
+.fig figcaption{font:400 .78rem/1.5 var(--mono);color:var(--muted);margin-top:8px}
+
+/* spec table */
+table{border-collapse:collapse;width:100%}
+.spec th,.spec td{text-align:left;vertical-align:top;padding:9px 0;border-bottom:1px solid var(--rule-2)}
+.spec tr:first-child th,.spec tr:first-child td{border-top:1px solid var(--ink)}
+.spec tr:last-child th,.spec tr:last-child td{border-bottom:1px solid var(--ink)}
+.spec th{font-weight:500;width:34%;padding-right:20px;color:var(--muted);font-size:.94rem}
+.spec td{font-size:.95rem}
+.spec td.v{font-size:.9rem}
+.tag{display:inline-block;font:500 .66rem/1 var(--mono);letter-spacing:.06em;padding:3px 5px 2px;border:1px solid currentColor;border-radius:3px;color:var(--accent);vertical-align:2px;margin-left:6px}
+.note{font-size:.82rem;color:var(--muted);margin-top:12px}
+
+/* bench notes */
+.procs{list-style:none;margin:0;padding:0;counter-reset:p}
+.procs li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 12px;padding:18px 0;border-bottom:1px solid var(--rule-2)}
+.procs li:first-child{padding-top:0}
+.procs li::before{counter-increment:p;content:counter(p,decimal-leading-zero);font:400 .82rem/1.9 var(--mono);color:var(--muted);grid-row:span 2}
+.procs h3{font-size:1.02rem;font-weight:600;margin:0}
+.procs p{margin:2px 0 0;max-width:38em}
+.caution{margin-top:28px;border-left:3px solid var(--warn);background:var(--warn-bg);padding:16px 20px;border-radius:0 4px 4px 0}
+.caution strong{display:block;font:500 .78rem/1 var(--mono);letter-spacing:.08em;color:var(--warn);margin-bottom:8px}
+.caution p{margin:0 0 8px;max-width:40em}
+.caution p:last-child{margin-bottom:0}
+
+/* screens */
+.shots{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;margin:0;padding:0;list-style:none}
+.shots button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in;text-align:left;color:inherit;font:inherit}
+.shots img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--rule);background:#000}
+.shots button:hover img,.shots button:focus-visible img{border-color:var(--accent)}
+.shots span{display:block;font:400 .74rem/1.45 var(--mono);color:var(--muted);margin-top:8px}
+
+/* free vs pro */
+.cmp th,.cmp td{padding:8px 0;border-bottom:1px solid var(--rule-2);text-align:left;font-size:.95rem}
+.cmp thead th{font:500 .74rem/1 var(--mono);letter-spacing:.06em;color:var(--muted);border-bottom:1px solid var(--ink);padding-bottom:10px}
+.cmp td.c,.cmp th.c{width:70px;text-align:center;font-family:var(--mono)}
+.cmp td.no{color:var(--muted)}
+.cmp tbody tr:last-child td{border-bottom:1px solid var(--ink)}
+
+footer{border-top:1px solid var(--rule);padding:22px 0 40px;font-size:.85rem;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer a{color:var(--muted)}
+
+/* lightbox */
+.lightbox{border:0;padding:0;background:transparent;max-width:100vw;max-height:100vh;width:100vw;height:100vh;margin:0}
+.lightbox::backdrop{background:rgba(12,13,14,.88)}
+.lightbox figure{margin:0;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 64px}
+.lb-img{max-height:calc(100vh - 110px);max-width:100%;width:auto;border-radius:16px}
+.lb-cap{font:400 .8rem/1.4 var(--mono);color:#c9ccd0;margin-top:12px;text-align:center;max-width:40em}
+.lb-close,.lb-nav{position:fixed;background:none;border:0;color:#e6e6e6;font:300 2.2rem/1 var(--sans);cursor:pointer;padding:10px 14px}
+.lb-close{top:8px;right:10px}
+.lb-prev{left:6px;top:50%;translate:0 -50%}
+.lb-next{right:6px;top:50%;translate:0 -50%}
+
+@media (max-width:860px){
+  .intro{grid-template-columns:minmax(0,1fr);gap:36px;padding-top:40px}
+  .phone{max-width:260px}
+  .head{grid-template-columns:minmax(0,1fr);gap:18px}
+  .shots{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .wrap{padding:0 16px}
+  .top nav{display:none}
+  h1{font-size:2.05rem}
+  .lede{font-size:1.05rem}
+  .get a{flex:1 1 140px;min-width:0}
+  .shots{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .spec th{width:42%;padding-right:12px}
+  .lightbox figure{padding:48px 8px 20px}
+  .lb-nav{display:none}
+}
+
+/* speaker tester additions */
+.intro.solo{display:block;padding:56px 0 44px}
+.intro.solo h1{max-width:18ch}
+.intro-cols{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:56px;align-items:start}
+.intro-cols .lede{margin-bottom:0}
+.plate{margin:36px 0 0}
+.plate button{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
+.plate img{display:block;width:100%;height:auto;border:1px solid var(--rule);border-radius:4px;background:#e9ebed}
+.plate figcaption{font:400 .78rem/1.5 var(--mono);color:var(--muted);margin-top:10px;max-width:60em}
+.chain{list-style:none;margin:0 0 24px;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0}
+.chain li{position:relative;border:1px solid var(--rule);background:var(--sheet);padding:12px 14px;margin-right:22px}
+.chain li:last-child{margin-right:0;border-color:var(--ink)}
+.chain li:not(:last-child)::after{content:"";position:absolute;right:-22px;top:50%;width:22px;border-top:1px solid var(--muted)}
+.chain li:not(:last-child)::before{content:"";position:absolute;right:-22px;top:calc(50% - 4px);border:4px solid transparent;border-left:6px solid var(--muted);border-right:0}
+.chain b{display:block;font-weight:600;font-size:.92rem}
+.chain span{display:block;font:400 .74rem/1.45 var(--mono);color:var(--muted);margin-top:4px}
+.limits{margin:20px 0 0}
+.limits dt{font-weight:600;margin-top:18px;padding-top:16px;border-top:1px solid var(--rule-2)}
+.limits dt:first-child{margin-top:0}
+.limits dd{margin:4px 0 0;max-width:38em}
+.shots.seven{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 16px}
+@media (max-width:860px){
+  .intro-cols{grid-template-columns:minmax(0,1fr);gap:24px}
+  .chain{grid-template-columns:minmax(0,1fr);max-width:360px}
+  .chain li{margin:0 0 18px}
+  .chain li:last-child{margin-bottom:0}
+  .shots.seven{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .chain li:not(:last-child)::after{right:auto;left:50%;top:auto;bottom:-18px;width:0;height:18px;border-top:0;border-left:1px solid var(--muted)}
+  .chain li:not(:last-child)::before{right:auto;left:calc(50% - 4px);top:auto;bottom:-18px;border:4px solid transparent;border-top:6px solid var(--muted);border-bottom:0}
+}
+@media (max-width:560px){
+  .intro.solo{padding-top:40px}
+  .shots.seven{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 12px}
+}
+</style>
 </head>
 <body>
-<header><a href="../">Qualhalla</a></header>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="../">Qualhalla</a>
+    <nav aria-label="On this page">
+      <a href="#method">Method</a>
+      <a href="#specs">Specs</a>
+      <a href="#limits">Limits</a>
+      <a href="#screens">Screens</a>
+      <a href="#pro">Free &amp; Pro</a>
+    </nav>
+  </div>
+</header>
+
 <main>
-<img class="icon" src="https://play-lh.googleusercontent.com/4D_83mtbOfXM-x69Egy3xT_35G5wK92BMYz3AH9fQPTYrdzIBJozFDh4qfsp0gd5r71JVELyhoEES9XOU2KcxAg=s256" alt="Freq&#x27;n Truth Speaker Tester icon" width="128" height="128">
-<h1>Freq&#x27;n Truth Speaker Tester</h1>
-<p>Measure your speakers&#x27; frequency response with a chirp sweep and your phone&#x27;s microphone.</p>
-<div class="links">
-<a class="btn" href="https://play.google.com/store/apps/details?id=com.qualhalla.speakertester">Get it on Google Play</a>
+<div class="wrap">
+
+<div class="intro solo">
+  <p class="kicker"><img src="https://play-lh.googleusercontent.com/4D_83mtbOfXM-x69Egy3xT_35G5wK92BMYz3AH9fQPTYrdzIBJozFDh4qfsp0gd5r71JVELyhoEES9XOU2KcxAg=s96" alt="" width="28" height="28">FREQ'N TRUTH SPEAKER TESTER</p>
+  <h1>A frequency response plot from your phone.</h1>
+  <div class="intro-cols">
+    <p class="lede">Play a sweep through your speakers, record it with the phone's mic or a USB measurement mic, and get a 20&nbsp;Hz – 20&nbsp;kHz response curve in a few seconds. Measure left and right separately, average several runs, load a mic calibration file, and export the data.</p>
+    <div>
+      <div class="get">
+        <a href="https://play.google.com/store/apps/details?id=com.qualhalla.speakertester"><small>Get it on</small><span>Google Play</span></a>
+      </div>
+      <p class="fine">Android 7.0 and later. Free, with a one-time Pro upgrade.</p>
+    </div>
+  </div>
+  <figure class="plate">
+    <button type="button" class="shot" data-full="screens/01-stereo-graph-full.webp" aria-label="Enlarge: Stereo measurement graph"><img src="screens/01-stereo-graph-full.webp" alt="Full-screen graph of a stereo measurement: left and right channel response from 20 Hz to 20 kHz, normalized to 0 dB at 1 kHz" width="1080" height="551"></button>
+    <figcaption>Fig. 1 &nbsp;Stereo measurement in the full-screen graph view, left and right overlaid, 0&nbsp;dB at 1&nbsp;kHz. This one was taken with a phone mic, which is why the bass falls away (see <a href="#limits">Limits</a>).</figcaption>
+  </figure>
+</div>
+
+<section id="method">
+  <div class="head">
+    <h2><span class="n">01</span>Method</h2>
+    <div class="body">
+      <ol class="chain">
+        <li><b>Sweep</b><span>Log chirp, 20&nbsp;Hz → 20&nbsp;kHz, 2&nbsp;s</span></li>
+        <li><b>Speaker + room</b><span>Left, right, or both</span></li>
+        <li><b>Microphone</b><span>Built-in or USB</span></li>
+        <li><b>Analysis</b><span>FFT, 24 points per octave</span></li>
+        <li><b>Curve</b><span>0&nbsp;dB at 1&nbsp;kHz, smoothed</span></li>
+      </ol>
+      <p>The sweep is logarithmic, so every octave gets the same amount of time and energy and the bass isn't shortchanged. The app plays it at the phone's native output rate while recording, finds where each frequency landed in the recording, and reads the level there. The result is normalized so 1&nbsp;kHz sits at 0&nbsp;dB, which makes two curves directly comparable even if one was measured louder than the other.</p>
+    </div>
+  </div>
+</section>
+
+<section id="specs">
+  <div class="head">
+    <h2><span class="n">02</span>Specifications</h2>
+    <div class="body">
+      <table class="spec">
+        <tr><th>Measurement range</th><td class="v">20 Hz – 20 kHz</td></tr>
+        <tr><th>Stimulus</th><td>Logarithmic chirp, <span class="mono">2 s</span>, at the device's native output rate (typically <span class="mono">48 kHz</span>)</td></tr>
+        <tr><th>Resolution</th><td class="v">24 points per octave</td></tr>
+        <tr><th>Reference</th><td class="v">Normalized to 0 dB at 1 kHz</td></tr>
+        <tr><th>Channels</th><td>Left and right measured one after the other and overlaid, or a single mono sweep</td></tr>
+        <tr><th>Averaging</th><td class="v">Up to 10 runs</td></tr>
+        <tr><th>Graph scale</th><td>Auto-fit to the data, or fixed lower and upper bounds in dB</td></tr>
+        <tr><th>Smoothing</th><td><span class="mono">1/3, 1/6, 1/12 octave</span>, or off</td></tr>
+        <tr><th>Mic calibration</th><td>Plain-text file, frequency and dB per line (comma, semicolon or space separated). Comment lines are skipped.</td></tr>
+        <tr><th>Mic input</th><td>Built-in mic, or an external mic on the unprocessed input</td></tr>
+        <tr><th>Export</th><td>Graph as JPEG; data as text, <span class="mono">Hz, dB</span> (stereo adds a column per channel)</td></tr>
+        <tr><th>History<span class="tag">PRO</span></th><td>Last 10 measurements kept automatically; lock any you want to keep for good; overlay 2 or 3 to compare</td></tr>
+        <tr><th>Tone Test</th><td>Sine, square and sawtooth, <span class="mono">1 Hz – 20 kHz</span>, with a live readout of the frequency and level the mic hears</td></tr>
+        <tr><th>Platform</th><td>Android 7.0 and later</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="limits">
+  <div class="head">
+    <h2><span class="n">03</span>Limits</h2>
+    <div class="body">
+      <p>A phone is not a measurement rig, and this app won't pretend otherwise. It's good at relative answers: is the left side the same as the right, did the repair change anything, is that tweeter alive. Here is what affects the curve, and what to do about it.</p>
+      <dl class="limits">
+        <dt>It's relative, not SPL</dt>
+        <dd>Everything is referenced to 1&nbsp;kHz. The curve tells you the shape of the response, not how loud the system plays.</dd>
+        <dt>Phone mics roll off the bass</dt>
+        <dd>Built-in mics are made for voices, and most drop off steeply in the low bass. A lot of the low-end slope in Fig.&nbsp;1 is the mic, not the speakers. A USB measurement mic with its calibration file loaded fixes most of this. With an external mic, the app records from Android's unprocessed input, so voice processing stays out of the way.</dd>
+        <dt>The room is in the measurement</dt>
+        <dd>At the listening position you're measuring the room as much as the speaker, and that's where the deep dips come from. To check a driver, put the mic a few centimetres from it, on axis.</dd>
+        <dt>Smoothing hides things</dt>
+        <dd>1/3 octave is easy to read and good for overall balance. Switch to 1/12 when you're looking for a narrow peak or notch.</dd>
+        <dt>Noise adds up</dt>
+        <dd>Measure in a quiet room and average three to five runs. Run-to-run wobble mostly averages out.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section id="uses">
+  <div class="head">
+    <h2><span class="n">04</span>Uses</h2>
+    <div class="body">
+      <ol class="procs">
+        <li>
+          <h3>Left against right</h3>
+          <p>Stereo mode measures each channel in turn and overlays them. Two of the same speaker should track each other closely. When one curve wanders off from the other over a whole range, something in that speaker or its wiring is different.</p>
+        </li>
+        <li>
+          <h3>Finding a dead driver</h3>
+          <p>A tweeter that has quit shows up as one channel falling away above a few kilohertz while the other carries on. A woofer with a damaged cone or a rubbing coil tends to show as a broad loss low down. Measure up close to the suspect driver to be sure.</p>
+        </li>
+        <li>
+          <h3>Before and after <span class="tag">PRO</span></h3>
+          <p>Measure before a refoam, a crossover repair or an EQ change, lock that measurement in history, and overlay the new one when you're done. Up to three can go on one graph. Same mic, same spot, same settings.</p>
+        </li>
+        <li>
+          <h3>Checking a tone by ear and by meter</h3>
+          <p>The Tone Test tab plays a steady tone and shows what the mic actually picks up, frequency and level. Listen Only turns the generator off and analyses whatever is playing, which is handy for checking another source.</p>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="screens">
+  <div class="head">
+    <h2><span class="n">05</span>Screens</h2>
+    <div class="body">
+      <ul class="shots seven">
+        <li><button type="button" class="shot" data-full="screens/02-measure-full.webp" aria-label="Enlarge: Result after a stereo sweep"><img src="screens/02-measure-thumb.webp" alt="Frequency Response tab after a stereo sweep, left and right curves on the graph" loading="lazy" width="360" height="803"><span>Result after a stereo sweep</span></button></li>
+        <li><button type="button" class="shot" data-full="screens/03-help-full.webp" aria-label="Enlarge: Built-in help"><img src="screens/03-help-thumb.webp" alt="The in-app help for Frequency Response: stereo sweep, settings, averaging, calibration, history and export" loading="lazy" width="360" height="803"><span>Built-in help</span></button></li>
+        <li><button type="button" class="shot" data-full="screens/04-chart-settings-full.webp" aria-label="Enlarge: Chart scale and smoothing"><img src="screens/04-chart-settings-thumb.webp" alt="Chart Settings: auto-fit vertical scale, manual lower and upper bounds in dB, and smoothing" loading="lazy" width="360" height="803"><span>Chart scale and smoothing</span></button></li>
+        <li><button type="button" class="shot" data-full="screens/05-history-select-full.webp" aria-label="Enlarge: History: pick runs to compare"><img src="screens/05-history-select-thumb.webp" alt="Measurement History with two stereo measurements selected and the Compare button" loading="lazy" width="360" height="803"><span>History: pick runs to compare</span></button></li>
+        <li><button type="button" class="shot" data-full="screens/06-history-compare-full.webp" aria-label="Enlarge: History: two runs overlaid"><img src="screens/06-history-compare-thumb.webp" alt="A saved comparison: left and right channels from two trials overlaid on one graph, locked" loading="lazy" width="360" height="803"><span>History: two runs overlaid</span></button></li>
+        <li><button type="button" class="shot" data-full="screens/07-tone-analysis-full.webp" aria-label="Enlarge: Tone Test: live readout"><img src="screens/07-tone-analysis-thumb.webp" alt="Tone Test real-time analysis: 440.0 Hz detected at -11.9 dB, with Listen Only and Play &amp; Listen" loading="lazy" width="360" height="803"><span>Tone Test: live readout</span></button></li>
+        <li><button type="button" class="shot" data-full="screens/08-tone-control-full.webp" aria-label="Enlarge: Tone Test: tone and waveform"><img src="screens/08-tone-control-thumb.webp" alt="Tone Test controls: frequency, volume, sine, square and sawtooth, and presets" loading="lazy" width="360" height="803"><span>Tone Test: tone and waveform</span></button></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="pro">
+  <div class="head">
+    <h2><span class="n">06</span>Free &amp; Pro</h2>
+    <div class="body">
+      <p>Measuring, exporting and calibration are all free. Pro opens up measurement history and comparison, removes the banner ad, and is a single purchase in the app. You can also watch an ad to open history for 24 hours.</p>
+      <table class="cmp">
+        <thead><tr><th>Feature</th><th class="c">FREE</th><th class="c">PRO</th></tr></thead>
+        <tbody>
+          <tr><td>Mono and stereo measurement</td><td class="c">yes</td><td class="c">yes</td></tr>
+          <tr><td>Averaging, smoothing</td><td class="c">yes</td><td class="c">yes</td></tr>
+          <tr><td>Mic calibration files</td><td class="c">yes</td><td class="c">yes</td></tr>
+          <tr><td>Export graph and data</td><td class="c">yes</td><td class="c">yes</td></tr>
+          <tr><td>Full-screen graph</td><td class="c">yes</td><td class="c">yes</td></tr>
+          <tr><td>Tone Test with live analysis</td><td class="c">yes</td><td class="c">yes</td></tr>
+          <tr><td>Measurement history</td><td class="c no">24 h</td><td class="c">yes</td></tr>
+          <tr><td>Compare and lock measurements</td><td class="c no">24 h</td><td class="c">yes</td></tr>
+          <tr><td>No banner ad</td><td class="c no">&mdash;</td><td class="c">yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 </div>
 </main>
-<footer>&copy; Qualhalla LLC</footer>
+
+<dialog class="lightbox" aria-label="Screenshot viewer">
+  <button type="button" class="lb-close" aria-label="Close">&times;</button>
+  <button type="button" class="lb-nav lb-prev" aria-label="Previous screenshot">&#8249;</button>
+  <figure>
+    <img class="lb-img" alt="">
+    <figcaption class="lb-cap"></figcaption>
+  </figure>
+  <button type="button" class="lb-nav lb-next" aria-label="Next screenshot">&#8250;</button>
+</dialog>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; Qualhalla LLC</span>
+    <a href="../">Other Qualhalla apps</a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  // The top figure and the screens grid share one viewer.
+  const all = [...document.querySelectorAll('.shot')];
+  const seen = new Set();
+  const shots = all.filter(b => !seen.has(b.dataset.full) && seen.add(b.dataset.full));
+  const box = document.querySelector('.lightbox');
+  if (!shots.length || !box || typeof box.showModal !== 'function') return;
+  const img = box.querySelector('.lb-img');
+  const cap = box.querySelector('.lb-cap');
+  let i = 0, opener = null, touchX = null;
+
+  const show = n => {
+    i = (n + shots.length) % shots.length;
+    const thumb = shots[i].querySelector('img');
+    img.src = shots[i].dataset.full;
+    img.alt = thumb.alt;
+    cap.textContent = thumb.alt;
+    [i + 1, i - 1].forEach(k => { new Image().src = shots[(k + shots.length) % shots.length].dataset.full; });
+  };
+
+  all.forEach(b => b.addEventListener('click', () => {
+    opener = b;
+    show(shots.findIndex(s => s.dataset.full === b.dataset.full));
+    box.showModal();
+  }));
+
+  box.querySelector('.lb-close').addEventListener('click', () => box.close());
+  box.querySelector('.lb-prev').addEventListener('click', () => show(i - 1));
+  box.querySelector('.lb-next').addEventListener('click', () => show(i + 1));
+  box.addEventListener('click', e => {
+    if (e.target === img || e.target.closest('button')) return;
+    box.close();
+  });
+  box.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { show(i + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft')  { show(i - 1); e.preventDefault(); }
+  });
+  box.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+  box.addEventListener('touchend', e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) show(dx < 0 ? i + 1 : i - 1);
+    touchX = null;
+  });
+  box.addEventListener('close', () => { img.removeAttribute('src'); if (opener) opener.focus(); });
+})();
+</script>
 </body>
 </html>
