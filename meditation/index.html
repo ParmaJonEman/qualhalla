@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woo Woo Frequency Generator + Sacred Geometry Visualizer</title>
+<meta name="description" content="Hear it, then see it. Layer Solfeggio frequencies and binaural beats with Woo Woo, and watch sacred geometry move to the sound with the Sacred Geometry Visualizer.">
+<meta property="og:title" content="Hear it. See it. Two apps for your practice.">
+<meta property="og:description" content="Woo Woo Frequency Generator and Sacred Geometry Visualizer, for Android and Apple devices.">
+<meta property="og:image" content="https://qualhalla.com/sacred-geometry/icon-512.png">
+<link rel="icon" href="../sacred-geometry/icon-360.webp" type="image/webp">
+<link rel="preconnect" href="https://play-lh.googleusercontent.com">
+<style>
+:root{
+  --night:#06060e; --deep:#0f0d22;
+  --gold:#d9b872; --violet:#8b6cf0; --lilac:#c9b8ff;
+  --cyan:#3ff0ff; --aqua:#9ff8ff; --magenta:#ff3df5;
+  --ink:#ece9f7; --dim:#a39fbd; --line:rgba(217,184,114,.26); --line-c:rgba(63,240,255,.26);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+}
+*{box-sizing:border-box}
+html{background:var(--night)}
+body{margin:0;color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.6;
+  background:
+    radial-gradient(ellipse 55% 40% at 22% 8%,rgba(139,108,240,.34) 0%,transparent 70%) no-repeat,
+    radial-gradient(ellipse 55% 40% at 78% 8%,rgba(63,200,255,.20) 0%,transparent 70%) no-repeat,
+    radial-gradient(ellipse 80% 55% at 50% 12%,#1d1840 0%,#100d26 45%,var(--night) 82%) no-repeat,var(--night);
+  min-height:100vh;overflow-x:hidden}
+.sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;fill:#c9c2f2;--m:linear-gradient(90deg,#000 0,#000 calc(50% - 480px),rgba(0,0,0,.12) calc(50% - 380px),rgba(0,0,0,.12) calc(50% + 380px),#000 calc(50% + 480px),#000 100%);-webkit-mask-image:var(--m);mask-image:var(--m)}
+.sky .tw{animation:tw 5s ease-in-out infinite}
+@keyframes tw{50%{opacity:.1}}
+.wrap p,.wrap h1,.wrap h2,.wrap h3{text-shadow:0 0 8px var(--night),0 0 2px var(--night)}
+.wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 20px}
+nav{padding:22px 0 6px;font-size:.9rem;letter-spacing:.14em;text-transform:uppercase}
+nav a{color:var(--dim);text-decoration:none} nav a:hover{color:var(--ink)}
+
+/* hero */
+.hero{text-align:center;padding:14px 0 8px}
+.pair{display:flex;justify-content:center;align-items:center;gap:0;margin:0 auto 6px}
+.pair img{width:min(108px,26vw);height:auto;aspect-ratio:1;border-radius:22%;animation:float 7s ease-in-out infinite}
+.pair .ww{box-shadow:0 0 50px 6px rgba(139,108,240,.4);transform:rotate(-6deg);margin-right:-10px;position:relative;z-index:1}
+.pair .sg{box-shadow:0 0 50px 6px rgba(63,240,255,.28);transform:rotate(6deg);animation-delay:-3.5s}
+.pair .plus{position:relative;z-index:2;width:34px;height:34px;margin:0 -6px;border-radius:50%;display:grid;place-items:center;
+  background:var(--deep);border:1px solid rgba(255,255,255,.18);color:var(--ink);font-size:1.2rem;line-height:1}
+@keyframes float{50%{translate:0 -6px}}
+h1{font-weight:400;font-size:clamp(2.2rem,7vw,3.6rem);line-height:1.08;margin:22px 0 12px;letter-spacing:.01em}
+h1 .h{color:var(--lilac);font-style:italic}
+h1 .s{color:var(--aqua);font-style:italic}
+.lede{max-width:32em;margin:0 auto;color:var(--dim);font-style:italic;font-size:1.08rem}
+
+/* app cards */
+.apps{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:38px 0 0}
+.card{--acc:var(--gold);--acc-line:var(--line);--glow:rgba(139,108,240,.18);
+  position:relative;display:flex;flex-direction:column;padding:24px 22px 22px;border-radius:22px;
+  background:linear-gradient(180deg,rgba(23,19,48,.82),rgba(12,11,28,.88));
+  border:1px solid var(--acc-line);box-shadow:0 0 60px var(--glow);overflow:hidden}
+.card.sgv{--acc:var(--cyan);--acc-line:var(--line-c);--glow:rgba(63,240,255,.10)}
+.card-top{display:grid;grid-template-columns:1fr 104px;gap:16px;align-items:start}
+.kicker{display:block;font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--acc);margin-bottom:4px}
+.card h2{margin:0 0 8px;font-weight:400;font-size:1.55rem;line-height:1.15}
+.card h2 em{color:var(--acc)}
+.card .pitch{margin:0;color:var(--dim);font-size:.98rem;line-height:1.5}
+.phone{display:block;width:104px;border-radius:14px;border:1px solid rgba(255,255,255,.1);background:var(--deep);
+  box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .25s}
+a:hover>.phone{transform:translateY(-3px)}
+.phone img{display:block;width:100%;height:auto;border-radius:14px}
+.hl{list-style:none;padding:0;margin:18px 0 0;font-size:.95rem;line-height:1.45}
+.hl li{position:relative;padding:7px 0 7px 22px;border-top:1px solid rgba(255,255,255,.06)}
+.hl li::before{content:"";position:absolute;left:2px;top:15px;width:7px;height:7px;border:1px solid var(--acc);transform:rotate(45deg)}
+.hl b{font-weight:400;color:var(--ink)}
+.hl span{color:var(--dim)}
+.stores{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;padding-top:20px}
+.stores a{flex:1 1 140px;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 16px;
+  border:1px solid var(--acc);border-radius:999px;color:var(--acc);text-decoration:none;letter-spacing:.05em;font-size:.92rem;
+  transition:.25s;white-space:nowrap}
+.stores a:hover,.stores a.mine{background:var(--acc);color:var(--night)}
+.stores a.mine:hover{filter:brightness(1.1)}
+.stores svg{width:18px;height:18px;fill:currentColor;flex-shrink:0}
+.meta{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:14px;font-size:.82rem;color:var(--dim)}
+.meta .plat{letter-spacing:.06em}
+.more{color:var(--acc);text-decoration:none;letter-spacing:.06em;white-space:nowrap}
+.more:hover{text-decoration:underline;text-underline-offset:3px}
+
+/* divider */
+.orn{display:flex;align-items:center;gap:14px;color:var(--ink);opacity:.85;margin:64px 0 26px;font-size:.8rem;letter-spacing:.3em;text-transform:uppercase;text-align:center}
+.orn::before{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line))}
+.orn::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line-c),transparent)}
+
+/* tones */
+.demo{max-width:620px;margin:0 auto}
+.hint{text-align:center;color:var(--dim);font-style:italic;font-size:.95rem;margin:-6px 0 18px}
+.fine{text-align:center}
+.tones{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tone{all:unset;box-sizing:border-box;cursor:pointer;text-align:center;padding:10px 4px 8px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.09);background:rgba(15,13,34,.6);transition:border-color .3s,background .3s}
+.tone:hover{border-color:var(--line)}
+.tone:focus-visible{outline:1px solid var(--gold);outline-offset:3px}
+.tone .hz{display:block;font-size:1.3rem;line-height:1.1;color:var(--ink);transition:color .3s,text-shadow .3s}
+.tone .nm{display:block;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-top:3px}
+.tone.ringing{border-color:var(--gold);background:rgba(139,108,240,.16)}
+.tone.ringing .hz{color:var(--lilac);text-shadow:0 0 16px var(--violet)}
+.fine{font-size:.82rem;color:var(--dim);font-style:italic;margin:14px 0 0}
+
+/* together */
+.steps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:s}
+.steps li{counter-increment:s;padding:18px 18px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.07);background:rgba(13,12,30,.55)}
+.steps li::before{content:counter(s,upper-roman);display:block;font-style:italic;color:var(--gold);font-size:1.15rem;margin-bottom:4px}
+.steps li:nth-child(2)::before{color:var(--lilac)}
+.steps li:nth-child(3)::before{color:var(--cyan)}
+.steps h3{margin:0 0 4px;font-weight:400;font-size:1.15rem}
+.steps p{margin:0;color:var(--dim);font-size:.95rem;line-height:1.5}
+
+/* closing */
+.vow{text-align:center;padding:4px 0 10px}
+.vow p{font-size:clamp(1.25rem,3.6vw,1.7rem);line-height:1.4;margin:0 0 12px}
+.vow small{display:block;color:var(--dim);font-style:italic;font-size:1rem}
+.jump{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:26px}
+.jump a{padding:11px 20px;border-radius:999px;text-decoration:none;font-size:.92rem;letter-spacing:.05em;transition:.25s}
+.jump .j1{border:1px solid var(--gold);color:var(--gold)} .jump .j1:hover{background:var(--gold);color:var(--night)}
+.jump .j2{border:1px solid var(--cyan);color:var(--cyan)} .jump .j2:hover{background:var(--cyan);color:var(--night)}
+.caution{max-width:36em;margin:34px auto 0;padding:14px 18px;border-left:2px solid var(--magenta);background:rgba(13,15,34,.55);
+  border-radius:0 12px 12px 0;color:var(--dim);font-size:.82rem;line-height:1.5;text-align:left}
+.caution b{color:#f2a8ff;font-weight:400;letter-spacing:.08em;text-transform:uppercase;font-size:.7rem;display:block;margin-bottom:2px}
+footer{text-align:center;color:var(--dim);font-size:.8rem;letter-spacing:.1em;padding:56px 0 40px}
+footer a{color:var(--dim)}
+
+@media (max-width:780px){
+  .apps{grid-template-columns:1fr;gap:18px;margin-top:30px}
+  .steps{grid-template-columns:1fr;gap:12px}
+}
+@media (max-width:640px){
+  body{font-size:17px}
+  .wrap{padding:0 16px}
+  .card{padding:20px 18px 18px}
+  .card-top{grid-template-columns:1fr 88px;gap:14px}
+  .phone{width:88px}
+  .card h2{font-size:1.4rem}
+  .orn{margin:52px 0 22px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg class="sky" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<circle cx="375" cy="259" r="0.6" opacity="0.52"/>
+<circle cx="408" cy="802" r="1.3" opacity="0.87"/>
+<circle cx="121" cy="476" r="1" opacity="0.78"/>
+<circle cx="942" cy="632" r="0.6" opacity="0.48" class="tw" style="animation-delay:4.9s"/>
+<circle cx="358" cy="488" r="0.6" opacity="0.56"/>
+<circle cx="160" cy="548" r="0.6" opacity="0.69"/>
+<circle cx="169" cy="947" r="0.6" opacity="0.42"/>
+<circle cx="260" cy="888" r="1.3" opacity="0.88" class="tw" style="animation-delay:4.3s"/>
+<circle cx="93" cy="152" r="1.3" opacity="0.38"/>
+<circle cx="100" cy="524" r="1.3" opacity="0.53" class="tw" style="animation-delay:2.2s"/>
+<circle cx="128" cy="148" r="1" opacity="0.35" class="tw" style="animation-delay:3.2s"/>
+<circle cx="264" cy="579" r="0.8" opacity="0.42"/>
+<circle cx="264" cy="461" r="0.6" opacity="0.4"/>
+<circle cx="174" cy="139" r="0.8" opacity="0.57"/>
+<circle cx="309" cy="461" r="1" opacity="0.34"/>
+<circle cx="30" cy="783" r="1.3" opacity="0.32"/>
+<circle cx="790" cy="738" r="0.6" opacity="0.65"/>
+<circle cx="745" cy="39" r="1.8" opacity="0.89"/>
+<circle cx="420" cy="323" r="1.8" opacity="0.61" class="tw" style="animation-delay:1.0s"/>
+<circle cx="751" cy="324" r="1.3" opacity="0.67"/>
+<circle cx="532" cy="857" r="0.8" opacity="0.75"/>
+<circle cx="169" cy="41" r="0.8" opacity="0.68"/>
+<circle cx="174" cy="986" r="1.3" opacity="0.41"/>
+<circle cx="974" cy="992" r="1" opacity="0.45" class="tw" style="animation-delay:3.3s"/>
+<circle cx="579" cy="595" r="1.8" opacity="0.46" class="tw" style="animation-delay:4.8s"/>
+<circle cx="725" cy="324" r="1" opacity="0.34"/>
+<circle cx="439" cy="607" r="0.6" opacity="0.59"/>
+<circle cx="934" cy="47" r="1.8" opacity="0.37"/>
+<circle cx="751" cy="517" r="1" opacity="0.34"/>
+<circle cx="271" cy="831" r="0.8" opacity="0.78"/>
+<circle cx="413" cy="839" r="0.6" opacity="0.73" class="tw" style="animation-delay:4.6s"/>
+<circle cx="898" cy="441" r="1.3" opacity="0.43"/>
+<circle cx="821" cy="643" r="1.8" opacity="0.85" class="tw" style="animation-delay:4.3s"/>
+<circle cx="960" cy="850" r="1.3" opacity="0.69"/>
+<circle cx="358" cy="397" r="1.3" opacity="0.37"/>
+<circle cx="150" cy="518" r="1.8" opacity="0.26" class="tw" style="animation-delay:2.2s"/>
+<circle cx="251" cy="36" r="1" opacity="0.75"/>
+<circle cx="965" cy="388" r="1" opacity="0.46" class="tw" style="animation-delay:0.1s"/>
+<circle cx="696" cy="326" r="1" opacity="0.54"/>
+<circle cx="91" cy="465" r="1.3" opacity="0.44"/>
+<circle cx="440" cy="734" r="0.6" opacity="0.53"/>
+<circle cx="99" cy="147" r="0.6" opacity="0.3"/>
+<circle cx="605" cy="783" r="0.8" opacity="0.5"/>
+<circle cx="463" cy="602" r="0.6" opacity="0.5" class="tw" style="animation-delay:3.4s"/>
+<circle cx="84" cy="334" r="0.8" opacity="0.72"/>
+<circle cx="439" cy="221" r="0.8" opacity="0.29"/>
+<circle cx="393" cy="785" r="1.8" opacity="0.71" class="tw" style="animation-delay:5.6s"/>
+<circle cx="201" cy="318" r="0.8" opacity="0.66"/>
+<circle cx="532" cy="889" r="1" opacity="0.89"/>
+<circle cx="721" cy="156" r="1.3" opacity="0.44"/>
+<circle cx="408" cy="639" r="0.6" opacity="0.84"/>
+<circle cx="103" cy="481" r="1" opacity="0.72"/>
+<circle cx="242" cy="921" r="1.8" opacity="0.53"/>
+<circle cx="425" cy="59" r="0.6" opacity="0.54" class="tw" style="animation-delay:5.8s"/>
+<circle cx="734" cy="201" r="1.3" opacity="0.39"/>
+<circle cx="70" cy="991" r="1.3" opacity="0.59" class="tw" style="animation-delay:4.8s"/>
+<circle cx="523" cy="546" r="1.3" opacity="0.32"/>
+<circle cx="581" cy="808" r="1" opacity="0.43"/>
+<circle cx="785" cy="328" r="0.8" opacity="0.81" class="tw" style="animation-delay:4.9s"/>
+<circle cx="74" cy="151" r="1" opacity="0.82" class="tw" style="animation-delay:4.0s"/>
+<circle cx="705" cy="524" r="0.6" opacity="0.74"/>
+<circle cx="718" cy="270" r="0.8" opacity="0.4"/>
+<circle cx="472" cy="603" r="1.8" opacity="0.89"/>
+<circle cx="750" cy="332" r="1.8" opacity="0.5"/>
+<circle cx="202" cy="822" r="0.6" opacity="0.86" class="tw" style="animation-delay:0.5s"/>
+<circle cx="932" cy="125" r="1.3" opacity="0.29"/>
+<circle cx="459" cy="725" r="1" opacity="0.83"/>
+<circle cx="970" cy="81" r="1" opacity="0.82" class="tw" style="animation-delay:4.4s"/>
+<circle cx="36" cy="469" r="0.8" opacity="0.32"/>
+<circle cx="673" cy="536" r="1" opacity="0.26" class="tw" style="animation-delay:3.4s"/>
+<circle cx="412" cy="303" r="1.8" opacity="0.31"/>
+<circle cx="71" cy="7" r="1" opacity="0.64"/>
+<circle cx="836" cy="223" r="0.6" opacity="0.38"/>
+<circle cx="793" cy="245" r="0.6" opacity="0.74"/>
+<circle cx="453" cy="542" r="1" opacity="0.33" class="tw" style="animation-delay:2.1s"/>
+<circle cx="792" cy="202" r="1.3" opacity="0.27"/>
+<circle cx="426" cy="94" r="1.3" opacity="0.82"/>
+<circle cx="46" cy="128" r="1" opacity="0.76"/>
+<circle cx="692" cy="991" r="1.8" opacity="0.73" class="tw" style="animation-delay:1.3s"/>
+<circle cx="862" cy="366" r="1.3" opacity="0.71" class="tw" style="animation-delay:0.2s"/>
+<circle cx="506" cy="550" r="0.6" opacity="0.41" class="tw" style="animation-delay:0.9s"/>
+<circle cx="435" cy="995" r="1.3" opacity="0.82"/>
+<circle cx="915" cy="926" r="1.8" opacity="0.32"/>
+<circle cx="85" cy="188" r="1" opacity="0.3"/>
+<circle cx="14" cy="232" r="0.8" opacity="0.88" class="tw" style="animation-delay:0.6s"/>
+<circle cx="671" cy="947" r="0.8" opacity="0.6"/>
+<circle cx="205" cy="931" r="0.6" opacity="0.56"/>
+<circle cx="503" cy="159" r="0.8" opacity="0.64"/>
+<circle cx="599" cy="817" r="1.8" opacity="0.84"/>
+<circle cx="373" cy="937" r="0.8" opacity="0.56"/>
+<circle cx="606" cy="99" r="1.3" opacity="0.63"/>
+<circle cx="428" cy="812" r="0.8" opacity="0.49" class="tw" style="animation-delay:4.6s"/>
+<circle cx="544" cy="995" r="1.3" opacity="0.64"/>
+<circle cx="942" cy="612" r="1" opacity="0.82" class="tw" style="animation-delay:1.4s"/>
+<circle cx="620" cy="107" r="1.8" opacity="0.82"/>
+</svg>
+
+<div class="wrap">
+<nav><a href="../">&larr; Qualhalla</a></nav>
+
+<header class="hero">
+  <div class="pair" aria-hidden="true">
+    <img class="ww" src="https://play-lh.googleusercontent.com/M83XU8R3i0sPTpMOnLIZJQa05iX1T0bnXCLkPV5hK9tQcsQVF44XaYJLT_WkCcQbxakm6SEku6N2RN4e2PMP=s256" alt="" width="108" height="108">
+    <span class="plus">+</span>
+    <img class="sg" src="../sacred-geometry/icon-360.webp" alt="" width="108" height="108">
+  </div>
+  <h1><span class="h">Hear</span> it.<br><span class="s">See</span> it.</h1>
+  <p class="lede">Two apps for meditation, sound healing and deep rest. Layer healing frequencies with Woo Woo, then watch sacred geometry move to the sound.</p>
+</header>
+
+<section class="apps" aria-label="The apps">
+
+  <article class="card ww" id="woo-woo">
+    <div class="card-top">
+      <div>
+        <span class="kicker">The sound</span>
+        <h2>Woo Woo<br><em>Frequency Generator</em></h2>
+        <p class="pitch">The Solfeggio scale and any frequency you can name, on pure tones or traditional instruments, layered however your practice calls for.</p>
+      </div>
+      <a href="../woo-woo/" aria-label="More about Woo Woo Frequency Generator"><span class="phone"><img src="../woo-woo/screens/01-main-thumb.webp" alt="Woo Woo's main screen: the crystal, play and record, master volume, and room reverb and background sounds" width="180" height="401"></span></a>
+    </div>
+    <ul class="hl">
+      <li><b>All nine Solfeggio tones</b> <span>built in, 174 to 963 Hz, one tap away</span></li>
+      <li><b>Traditional instruments</b> <span>crystal and Tibetan bowls, singing bowl, gong, chimes, Om chant and tanpura drone</span></li>
+      <li><b>Stack up to twenty tones</b> <span>with binaural beats, tuned to the thousandth of a hertz</span></li>
+      <li><b>Build rituals</b> <span>that crossfade from stack to stack and fade to silence, even with the screen off</span></li>
+      <li><b>No ads, no tracking</b> <span>one-time purchase, yours forever</span></li>
+    </ul>
+    <div class="stores">
+      <a class="gp" href="https://play.google.com/store/apps/details?id=com.qualhalla.woowoofrequencygenerator&amp;referrer=utm_source%3Dinstagram%26utm_medium%3Dsocial%26utm_campaign%3Dsound_and_geometry">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 1.8c-.3.3-.4.7-.4 1.2v18c0 .5.1.9.4 1.2L13.7 12 3.6 1.8zm11.2 11.3 2.8 2.8-11.7 6.7 8.9-9.5zm3.9-3.9 3.1 1.8c.9.5.9 1.5 0 2l-3.1 1.8-3.1-3.1 3.1-2.5zM5.9 1.4l11.7 6.7-2.8 2.8-8.9-9.5z"/></svg>
+        Google Play
+      </a>
+      <a class="as" href="https://apps.apple.com/us/app/woo-woo-frequency-generator/id6794144015">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM13.9 4.9c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"/></svg>
+        App Store
+      </a>
+    </div>
+    <div class="meta">
+      <span class="plat">Android &middot; iPhone &middot; iPad</span>
+      <a class="more" href="../woo-woo/">More details &rarr;</a>
+    </div>
+  </article>
+
+  <article class="card sgv" id="visualizer">
+    <div class="card-top">
+      <div>
+        <span class="kicker">The sight</span>
+        <h2>Sacred Geometry<br><em>Visualizer</em></h2>
+        <p class="pitch">Ten ancient forms, drawn live and moving with whatever you play: the bass, the melody and the beat.</p>
+      </div>
+      <a href="../sacred-geometry/" aria-label="More about Sacred Geometry Visualizer"><span class="phone"><img src="https://play-lh.googleusercontent.com/x1pE9W2Ek3_F-LCR0M5w4f1Wrk46S2SdN1sFIh65dKFfzvEqACNyC0Bhrv0NZFH9ETnQ56vU1DIqv9ZRUbiWJg=w360-rw" alt="Metatron's Cube in the Visualizer: thirteen circles joined by glowing lines" width="180" height="390"></span></a>
+    </div>
+    <ul class="hl">
+      <li><b>Flower of Life, Metatron's Cube, Sri Yantra, Merkaba</b> <span>and six more</span></li>
+      <li><b>Hears your phone or the room</b> <span>device audio on Android, or the microphone</span></li>
+      <li><b>Record it, or cast it</b> <span>to the TV with Chromecast or AirPlay</span></li>
+      <li><b>Live wallpaper</b> <span>on Android, a music player with EQ on Apple</span></li>
+    </ul>
+    <div class="stores">
+      <a class="gp" href="https://play.google.com/store/apps/details?id=com.qualhalla.visualizer&amp;referrer=utm_source%3Dinstagram%26utm_medium%3Dsocial%26utm_campaign%3Dsound_and_geometry">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.6 1.8c-.3.3-.4.7-.4 1.2v18c0 .5.1.9.4 1.2L13.7 12 3.6 1.8zm11.2 11.3 2.8 2.8-11.7 6.7 8.9-9.5zm3.9-3.9 3.1 1.8c.9.5.9 1.5 0 2l-3.1 1.8-3.1-3.1 3.1-2.5zM5.9 1.4l11.7 6.7-2.8 2.8-8.9-9.5z"/></svg>
+        Google Play
+      </a>
+      <a class="as" href="https://apps.apple.com/us/app/sacred-geometry-visualizer/id6801698177">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM13.9 4.9c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.5z"/></svg>
+        App Store
+      </a>
+    </div>
+    <div class="meta">
+      <span class="plat">Android &middot; iPhone &middot; iPad &middot; Mac</span>
+      <a class="more" href="../sacred-geometry/">More details &rarr;</a>
+    </div>
+  </article>
+
+</section>
+
+<div class="orn">The Solfeggio scale</div>
+<section class="demo">
+  <p class="hint">Tap a tone to hear it as a pure sine. In Woo Woo, play it on a singing bowl, gong or tanpura too.</p>
+  <div class="tones">
+    <button type="button" class="tone" data-hz="174" aria-label="Play 174 hertz, Foundation"><span class="hz">174</span><span class="nm">Foundation</span></button>
+    <button type="button" class="tone" data-hz="285" aria-label="Play 285 hertz, Healing"><span class="hz">285</span><span class="nm">Healing</span></button>
+    <button type="button" class="tone" data-hz="396" aria-label="Play 396 hertz, Liberation"><span class="hz">396</span><span class="nm">Liberation</span></button>
+    <button type="button" class="tone" data-hz="417" aria-label="Play 417 hertz, Change"><span class="hz">417</span><span class="nm">Change</span></button>
+    <button type="button" class="tone" data-hz="528" aria-label="Play 528 hertz, Transformation"><span class="hz">528</span><span class="nm">Transform</span></button>
+    <button type="button" class="tone" data-hz="639" aria-label="Play 639 hertz, Connection"><span class="hz">639</span><span class="nm">Connection</span></button>
+    <button type="button" class="tone" data-hz="741" aria-label="Play 741 hertz, Expression"><span class="hz">741</span><span class="nm">Expression</span></button>
+    <button type="button" class="tone" data-hz="852" aria-label="Play 852 hertz, Intuition"><span class="hz">852</span><span class="nm">Intuition</span></button>
+    <button type="button" class="tone" data-hz="963" aria-label="Play 963 hertz, Unity"><span class="hz">963</span><span class="nm">Unity</span></button>
+  </div>
+  <p class="fine">Sound on. On iPhone, the ringer switch needs to be on to hear it.</p>
+</section>
+
+<div class="orn">Better together</div>
+<ol class="steps">
+  <li><h3>Build your sound</h3><p>In Woo Woo, pick a Solfeggio tone or stack your own, choose a voice like a crystal bowl or tanpura, and set the timer.</p></li>
+  <li><h3>Open the Visualizer</h3><p>On Android it follows whatever your phone is playing, Woo Woo included. Or switch it to the microphone.</p></li>
+  <li><h3>Let it carry you</h3><p>Cast it to the TV, dim the lights, and let the sound and the geometry move together.</p></li>
+</ol>
+
+<div class="orn">&#10022;</div>
+<section class="vow">
+  <p>Put on a frequency,<br>and watch the geometry follow it.</p>
+  <small>Made by one independent developer in St. Louis.</small>
+  <div class="jump">
+    <a class="j1" href="#woo-woo">Get Woo Woo</a>
+    <a class="j2" href="#visualizer">Get the Visualizer</a>
+  </div>
+  <div class="caution"><b>Photosensitivity</b>The Visualizer uses pulsing light and shifting color. If you or anyone watching has a history of photosensitive epilepsy or seizures, talk to a doctor before using it.</div>
+</section>
+
+<footer>&copy; Qualhalla LLC &middot; <a href="../">More apps</a></footer>
+</div>
+
+<script>
+// Make the store button for the visitor's own phone the filled one.
+(() => {
+  const ua = navigator.userAgent || '';
+  const apple = /iPhone|iPad|iPod|Macintosh/.test(ua) && !/Android/.test(ua);
+  const android = /Android/.test(ua);
+  if (!apple && !android) return;
+  document.querySelectorAll('.stores').forEach(s => {
+    const mine = s.querySelector(apple ? '.as' : '.gp');
+    mine.classList.add('mine');
+    s.prepend(mine);
+  });
+})();
+</script>
+<script>
+(() => {
+  // Short pulse of each Solfeggio tone: fade in, a brief hold, fade out.
+  // Generated live by the browser, so there are no audio files to load.
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const tones = document.querySelectorAll('.tone');
+  if (!AC || !tones.length) return;
+
+  const PEAK = 0.12;      // kept low: a pure sine is piercing, and someone may be on headphones
+  const ATTACK = 0.08;    // ramping in and out avoids the click of an instant start or stop
+  const HOLD = 0.6;
+  const RELEASE = 1.2;
+  const DUR = ATTACK + HOLD + RELEASE;
+  let ctx = null;
+
+  const play = hz => {
+    ctx = ctx || new AC();
+    if (ctx.state === 'suspended') ctx.resume();
+    const t = ctx.currentTime + 0.01;
+    const osc = ctx.createOscillator();
+    const amp = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = hz;
+    amp.gain.setValueAtTime(0, t);
+    amp.gain.linearRampToValueAtTime(PEAK, t + ATTACK);
+    amp.gain.setValueAtTime(PEAK, t + ATTACK + HOLD);
+    amp.gain.exponentialRampToValueAtTime(0.0001, t + DUR);
+    osc.connect(amp).connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + DUR + 0.05);
+    osc.onended = () => { osc.disconnect(); amp.disconnect(); };
+  };
+
+  tones.forEach(btn => {
+    let timer;
+    btn.addEventListener('click', () => {
+      play(Number(btn.dataset.hz));
+      // Glow for as long as it sounds, which also tells silent-mode
+      // iPhones (where Safari mutes this) that the tap registered.
+      btn.classList.remove('ringing');
+      void btn.offsetWidth;
+      btn.classList.add('ringing');
+      clearTimeout(timer);
+      timer = setTimeout(() => btn.classList.remove('ringing'), DUR * 1000);
+    });
+  });
+})();
+</script>
+</body>
+</html>
